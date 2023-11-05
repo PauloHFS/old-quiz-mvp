@@ -4,10 +4,13 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "predev": "yarn supabase:gen:types",
     "dev": "vite",
+    "prebuild": "yarn supabase:gen:types",
     "build": "tsc && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "supabase:gen:types": "supabase gen types typescript --project-id giaxdabaumxzowpnafox > src/services/database.types.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.2",
