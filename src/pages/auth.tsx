@@ -1,6 +1,7 @@
 import { Auth } from '@supabase/auth-ui-react';
 import { ThemeMinimal } from '@supabase/auth-ui-shared';
 import { supabase } from '../services/supabase';
+import { getURL } from '../utils';
 
 // https://supabase.com/docs/guides/auth/auth-helpers/auth-ui
 export const AuthPage = () => {
@@ -10,6 +11,7 @@ export const AuthPage = () => {
       appearance={{
         theme: ThemeMinimal,
       }}
+      redirectTo={getURL() + '/v1'}
       providers={[]}
       localization={{
         variables: {

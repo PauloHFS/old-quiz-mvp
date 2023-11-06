@@ -34,13 +34,6 @@ export const router = createBrowserRouter([
         },
       },
       {
-        path: 'logout',
-        action: () => {
-          supabase.auth.signOut();
-          return redirect('/');
-        },
-      },
-      {
         path: 'v1',
         loader: redirectIfNotAuthenticated,
         children: v1Routes,
