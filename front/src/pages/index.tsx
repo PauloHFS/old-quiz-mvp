@@ -4,6 +4,7 @@ import { AuthPage } from './auth';
 import { Home } from './home';
 import { Root } from './root';
 import { v1Routes } from './v1';
+import { V1Layout } from './v1/layout';
 
 const hasSession = async () => {
   const { data, error } = await supabase.auth.getSession();
@@ -35,6 +36,7 @@ export const router = createBrowserRouter([
       },
       {
         path: 'v1',
+        element: <V1Layout />,
         loader: redirectIfNotAuthenticated,
         children: v1Routes,
       },

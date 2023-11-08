@@ -13,6 +13,7 @@
     "supabase:gen:types": "supabase gen types typescript --project-id giaxdabaumxzowpnafox > src/services/database.types.ts"
   },
   "dependencies": {
+    "@headlessui/react": "^1.7.17",
     "@hookform/resolvers": "^3.3.2",
     "@supabase/auth-ui-react": "^0.4.6",
     "@supabase/auth-ui-shared": "^0.1.8",

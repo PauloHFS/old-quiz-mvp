@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { supabase } from '../../../services/supabase';
-import { Tables } from '../../../services/supabase/utility.types';
+import { supabase } from '../../services/supabase';
+import { Tables } from '../../services/supabase/utility.types';
 
 export const Dashboard: React.FC = () => {
   const navigate = useNavigate();
@@ -9,6 +9,8 @@ export const Dashboard: React.FC = () => {
   const [quizes, setQuizes] = useState<Array<Tables<'quiz'>>>();
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  const onCreateNewQuizPress = () => navigate('/v1/new-quiz');
 
   useEffect(() => {
     let ignore = false;
@@ -32,8 +34,13 @@ export const Dashboard: React.FC = () => {
 
   return (
     <main>
-      <h1>Dashboard</h1>
-
+      <button
+        type="button"
+        className="bg-green-500"
+        onClick={onCreateNewQuizPress}
+      >
+        Criar Novo Quiz
+      </button>
       {loading && <div>Loading ...</div>}
       {error && <div>Failed to fetch data.</div>}
       {quizes && (
