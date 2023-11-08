@@ -2,17 +2,12 @@ import bycript from 'bcrypt';
 import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import { env } from '../../config/env.js';
+import { prismaClient } from '../../database/index.js';
 import {
   loginSchema,
   refreshTokenSchema,
   signupSchema,
 } from './validations.js';
-
-const users: {
-  nome: string;
-  email: string;
-  password: string;
-}[] = [];
 
 const refreshTokens: string[] = [];
 
@@ -20,7 +15,17 @@ export const login = async (req: Request, res: Response) => {
   try {
     const { body } = loginSchema.parse(req);
 
-    const user = users.find(user => user.email === body.email);
+    const user = await prismaClient.user.findUnique({
+      where: {
+        email: body.email,
+      },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        password: true,
+      },
+    });
 
     if (!user) {
       return res.status(401).json({ message: 'Email ou senha incorretos' });
@@ -41,9 +46,18 @@ export const login = async (req: Request, res: Response) => {
       expiresIn: '7d',
     });
 
-    refreshTokens.push(refreshToken);
+    const session = await prismaClient.session.create({
+      data: {
+        refreshToken,
+        user: {
+          connect: {
+            id: userData.id,
+          },
+        },
+      },
+    });
 
-    return res.json({ accessToken, refreshToken });
+    return res.json({ accessToken, refreshToken: session.refreshToken });
   } catch (error) {
     return res.status(400).json(error);
   }
@@ -67,9 +81,21 @@ export const signup = async (req: Request, res: Response) => {
 
     const hashedPassword = await bycript.hash(body.password, 10);
 
-    users.push({ ...body, password: hashedPassword });
+    const user = await prismaClient.user.create({
+      data: {
+        name: body.nome,
+        email: body.email,
+        password: hashedPassword,
+      },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        password: false,
+      },
+    });
 
-    return res.status(201).json({ message: 'Usuário criado com sucesso' });
+    return res.status(201).json(user);
   } catch (error) {
     return res.status(400).json(error);
   }

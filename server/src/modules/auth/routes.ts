@@ -8,8 +8,6 @@ import {
   signupSchema,
 } from './validations.js';
 
-const users = [];
-
 const AuthRouter = express.Router();
 
 AuthRouter.post('/login', validateZodSchema(loginSchema), login);
