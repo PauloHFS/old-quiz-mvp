@@ -18,6 +18,7 @@ model User {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   Session   Session[]
+  Quiz      Quiz[]
 }
 
 model Session {
@@ -27,4 +28,37 @@ model Session {
   refreshToken String   @unique
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+}
+
+model Quiz {
+  id           Int            @id @default(autoincrement())
+  userId       Int
+  user         User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name         String
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  Question     Question[]
+  QuizUserInfo QuizUserInfo[]
+}
+
+model Question {
+  id           Int      @id @default(autoincrement())
+  quizId       Int
+  quiz         Quiz     @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  title        String
+  alternatives String[] @default([])
+  correctIndex Int
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model QuizUserInfo {
+  id          Int      @id @default(autoincrement())
+  quizId      Int
+  quiz        Quiz     @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  gender      String
+  age         Int
+  geolocation String // cidade-estado
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
