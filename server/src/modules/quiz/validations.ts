@@ -22,4 +22,19 @@ export const createNewQuizSchema = z.object({
   }),
 });
 
-type CreateNewQuizSchemaType = z.infer<typeof createNewQuizSchema>;
+export const createResponseSchema = z.object({
+  body: z.object({
+    quizId: z.number(),
+    userData: z.object({
+      gender: z.string(),
+      age: z.number().min(1).max(100),
+      geolocation: z.string(),
+    }),
+    responses: z.array(
+      z.object({
+        questionId: z.number(),
+        alternativa: z.string(),
+      })
+    ),
+  }),
+});

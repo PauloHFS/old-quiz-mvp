@@ -42,14 +42,23 @@ model Quiz {
 }
 
 model Question {
-  id           Int      @id @default(autoincrement())
+  id           Int        @id @default(autoincrement())
   quizId       Int
-  quiz         Quiz     @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  quiz         Quiz       @relation(fields: [quizId], references: [id], onDelete: Cascade)
   title        String
-  alternatives String[] @default([])
+  alternatives String[]   @default([])
   correctIndex Int
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  Response     Response[]
+}
+
+model Response {
+  id          Int      @id @default(autoincrement())
+  questionId  Int
+  question    Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  alternative String
+  createdAt   DateTime @default(now())
 }
 
 model QuizUserInfo {

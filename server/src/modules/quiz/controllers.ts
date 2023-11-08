@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { prismaClient } from '../../database/index.js';
-import { createNewQuizSchema } from './validations.js';
+import { createNewQuizSchema, createResponseSchema } from './validations.js';
 
 export const listAllQuizes = async (req: Request, res: Response) => {
   try {
@@ -76,6 +76,37 @@ export const createNewQuiz = async (req: Request, res: Response) => {
     });
 
     return res.status(201).json(quiz);
+  } catch (error) {
+    return res.status(400).json(error);
+  }
+};
+
+export const createNewQuizResponse = async (req: Request, res: Response) => {
+  try {
+    const {
+      body: { responses, userData, quizId },
+    } = createResponseSchema.parse(req);
+
+    const userInfo = await prismaClient.quizUserInfo.create({
+      data: {
+        age: userData.age,
+        gender: userData.gender,
+        geolocation: userData.geolocation,
+        quizId,
+      },
+    });
+
+    const { count } = await prismaClient.response.createMany({
+      data: responses.map(({ questionId, alternativa }) => ({
+        alternative: alternativa,
+        questionId,
+      })),
+    });
+
+    return res.status(201).json({
+      userInfo,
+      responses: count,
+    });
   } catch (error) {
     return res.status(400).json(error);
   }
