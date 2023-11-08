@@ -14,7 +14,7 @@ const refreshTokens: string[] = [];
 
 export const login = async (req: Request, res: Response) => {
   try {
-    const { body } = loginSchema.parse(req.body);
+    const { body } = loginSchema.parse(req);
 
     const user = users.find(user => user.email === body.email);
 
@@ -49,7 +49,7 @@ export const logout = async (req: Request, res: Response) => {};
 
 export const signup = async (req: Request, res: Response) => {
   try {
-    const { body } = signupSchema.parse(req.body);
+    const { body } = signupSchema.parse(req);
 
     const hashedPassword = await bycript.hash(body.password, 10);
 
