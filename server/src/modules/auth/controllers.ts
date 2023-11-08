@@ -9,8 +9,6 @@ import {
   signupSchema,
 } from './validations.js';
 
-const refreshTokens: string[] = [];
-
 export const login = async (req: Request, res: Response) => {
   try {
     const { body } = loginSchema.parse(req);
@@ -67,7 +65,11 @@ export const logout = async (req: Request, res: Response) => {
   try {
     const { body } = refreshTokenSchema.parse(req);
 
-    refreshTokens.filter(token => token !== body.refreshToken);
+    await prismaClient.session.delete({
+      where: {
+        refreshToken: body.refreshToken,
+      },
+    });
 
     return res.status(204).send();
   } catch (error) {
@@ -105,7 +107,13 @@ export const refreshToken = async (req: Request, res: Response) => {
   try {
     const { body } = refreshTokenSchema.parse(req);
 
-    if (!refreshTokens.includes(body.refreshToken)) {
+    const refreshToken = await prismaClient.session.findFirst({
+      where: {
+        refreshToken: body.refreshToken,
+      },
+    });
+
+    if (!refreshToken) {
       return res.status(403).json({ message: 'Refresh Token inválido' });
     }
 
