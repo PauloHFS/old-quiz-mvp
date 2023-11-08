@@ -7,6 +7,7 @@ import {
   createNewQuiz,
   createNewQuizResponse,
   getQuizById,
+  getQuizStats,
   listAllQuizes,
 } from './controllers.js';
 import { createNewQuizSchema, createResponseSchema } from './validations.js';
@@ -15,6 +16,7 @@ const QuizRouter = express.Router();
 
 QuizRouter.get('/', verifySession, pagination(), listAllQuizes);
 QuizRouter.get('/:id', verifySession, getQuizById);
+QuizRouter.get('/:id/stats', verifySession, getQuizStats);
 QuizRouter.post(
   '/',
   verifySession,

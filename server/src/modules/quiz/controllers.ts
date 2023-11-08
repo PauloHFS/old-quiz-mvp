@@ -111,3 +111,16 @@ export const createNewQuizResponse = async (req: Request, res: Response) => {
     return res.status(400).json(error);
   }
 };
+
+export const getQuizStats = async (req: Request, res: Response) => {
+  try {
+    const quizId = Number(req.params.id);
+
+    return res.json({
+      quizId,
+      message: 'stats',
+    });
+  } catch (error) {
+    return res.status(400).json(error);
+  }
+};
