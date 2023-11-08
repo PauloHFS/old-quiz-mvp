@@ -2,7 +2,11 @@ import bycript from 'bcrypt';
 import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import { env } from '../../config/env.js';
-import { loginSchema, signupSchema } from './validations.js';
+import {
+  loginSchema,
+  refreshTokenSchema,
+  signupSchema,
+} from './validations.js';
 
 const users: {
   nome: string;
@@ -45,7 +49,17 @@ export const login = async (req: Request, res: Response) => {
   }
 };
 
-export const logout = async (req: Request, res: Response) => {};
+export const logout = async (req: Request, res: Response) => {
+  try {
+    const { body } = refreshTokenSchema.parse(req);
+
+    refreshTokens.filter(token => token !== body.refreshToken);
+
+    return res.status(204).send();
+  } catch (error) {
+    return res.status(400).json(error);
+  }
+};
 
 export const signup = async (req: Request, res: Response) => {
   try {
@@ -61,4 +75,21 @@ export const signup = async (req: Request, res: Response) => {
   }
 };
 
-export const refreshToken = async (req: Request, res: Response) => {};
+export const refreshToken = async (req: Request, res: Response) => {
+  try {
+    const { body } = refreshTokenSchema.parse(req);
+
+    if (!refreshTokens.includes(body.refreshToken)) {
+      return res.status(403).json({ message: 'Refresh Token inválido' });
+    }
+
+    const decoded = jwt.verify(body.refreshToken, env.JWT_SECRET);
+
+    const accessToken = jwt.sign(decoded, env.JWT_SECRET);
+
+    return res.json({ accessToken });
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json(error);
+  }
+};
