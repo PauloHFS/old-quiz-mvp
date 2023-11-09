@@ -29,8 +29,10 @@ export const createNewQuizSchema = z.object({
 });
 
 export const createResponseSchema = z.object({
+  params: z.object({
+    id: z.string(),
+  }),
   body: z.object({
-    quizId: z.number(),
     userData: z.object({
       gender: z.string(),
       age: z.number().min(1).max(100),

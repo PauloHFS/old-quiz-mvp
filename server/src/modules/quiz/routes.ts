@@ -33,7 +33,7 @@ QuizRouter.post(
   createNewQuiz
 );
 QuizRouter.post(
-  '/response',
+  '/:id/response',
   rateLimit({ windowMs: 60 * 1000, max: 10 }),
   validateZodSchema(createResponseSchema),
   createNewQuizResponse
