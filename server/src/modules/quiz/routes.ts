@@ -10,12 +10,21 @@ import {
   getQuizStats,
   listAllQuizes,
 } from './controllers';
-import { createNewQuizSchema, createResponseSchema } from './validations';
+import {
+  createNewQuizSchema,
+  createResponseSchema,
+  getQuizByIdSchema,
+} from './validations';
 
 const QuizRouter = express.Router();
 
 QuizRouter.get('/', verifySession, pagination(), listAllQuizes);
-QuizRouter.get('/:id', verifySession, getQuizById);
+QuizRouter.get(
+  '/:id',
+  verifySession,
+  validateZodSchema(getQuizByIdSchema),
+  getQuizById
+);
 QuizRouter.get('/:id/stats', verifySession, getQuizStats);
 QuizRouter.post(
   '/',

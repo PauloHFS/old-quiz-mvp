@@ -1,5 +1,11 @@
 import { z } from 'zod';
 
+export const getQuizByIdSchema = z.object({
+  params: z.object({
+    id: z.string(),
+  }),
+});
+
 export const createNewQuizSchema = z.object({
   body: z.object({
     nome: z
