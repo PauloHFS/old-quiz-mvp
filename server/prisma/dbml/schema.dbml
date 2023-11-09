@@ -30,6 +30,7 @@ Table Quiz {
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
   Question Question [not null]
+  ResponseUserInfo ResponseUserInfo [not null]
 }
 
 Table Question {
@@ -48,20 +49,19 @@ Table Response {
   id Int [pk, increment]
   questionId Int [not null]
   question Question [not null]
-  responseUserInfoId Int [not null]
-  responseUserInfo ResponseUserInfo [not null]
   alternative String [not null]
   createdAt DateTime [default: `now()`, not null]
 }
 
 Table ResponseUserInfo {
   id Int [pk, increment]
+  quizId Int [not null]
+  quiz Quiz [not null]
   gender String [not null]
   age Int [not null]
   geolocation String [not null]
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
-  Response Response [not null]
 }
 
 Ref: Session.userId > User.id [delete: Cascade]
@@ -72,4 +72,4 @@ Ref: Question.quizId > Quiz.id [delete: Cascade]
 
 Ref: Response.questionId > Question.id [delete: Cascade]
 
-Ref: Response.responseUserInfoId > ResponseUserInfo.id [delete: Cascade]
+Ref: ResponseUserInfo.quizId > Quiz.id [delete: Cascade]

@@ -35,13 +35,14 @@ model Session {
 }
 
 model Quiz {
-  id        Int        @id @default(autoincrement())
-  userId    Int
-  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  name      String
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
-  Question  Question[]
+  id               Int                @id @default(autoincrement())
+  userId           Int
+  user             User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name             String
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+  Question         Question[]
+  ResponseUserInfo ResponseUserInfo[]
 }
 
 model Question {
@@ -57,21 +58,20 @@ model Question {
 }
 
 model Response {
-  id                 Int              @id @default(autoincrement())
-  questionId         Int
-  question           Question         @relation(fields: [questionId], references: [id], onDelete: Cascade)
-  responseUserInfoId Int
-  responseUserInfo   ResponseUserInfo @relation(fields: [responseUserInfoId], references: [id], onDelete: Cascade)
-  alternative        String
-  createdAt          DateTime         @default(now())
+  id          Int      @id @default(autoincrement())
+  questionId  Int
+  question    Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  alternative String
+  createdAt   DateTime @default(now())
 }
 
 model ResponseUserInfo {
-  id          Int        @id @default(autoincrement())
+  id          Int      @id @default(autoincrement())
+  quizId      Int
+  quiz        Quiz     @relation(fields: [quizId], references: [id], onDelete: Cascade)
   gender      String
   age         Int
   geolocation String // cidade-estado
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
-  Response    Response[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
