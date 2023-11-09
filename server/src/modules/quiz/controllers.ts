@@ -84,10 +84,13 @@ export const createNewQuiz = async (req: Request, res: Response) => {
 export const createNewQuizResponse = async (req: Request, res: Response) => {
   try {
     const {
-      body: { responses, userData, quizId },
+      body: { responses, userData },
+      params,
     } = createResponseSchema.parse(req);
 
-    const userInfo = await prismaClient.quizUserInfo.create({
+    const quizId = Number(params.id);
+
+    const userInfo = await prismaClient.responseUserInfo.create({
       data: {
         age: userData.age,
         gender: userData.gender,
