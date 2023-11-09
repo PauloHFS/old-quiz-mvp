@@ -1,12 +1,12 @@
 import express from 'express';
-import { validateZodSchema } from '../../middlewares/validateZodSchema.js';
-import { login, logout, refreshToken, signup } from './controllers.js';
+import { validateZodSchema } from '../../middlewares/validateZodSchema';
+import { login, logout, refreshToken, signup } from './controllers';
 import {
   loginSchema,
   logoutSchema,
   refreshTokenSchema,
   signupSchema,
-} from './validations.js';
+} from './validations';
 
 const AuthRouter = express.Router();
 

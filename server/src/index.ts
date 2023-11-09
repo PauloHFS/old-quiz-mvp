@@ -1,9 +1,9 @@
 import express from 'express';
 import helmet from 'helmet';
 import morgan from 'morgan';
-import { env } from './config/env.js';
-import { AuthRouter } from './modules/auth/routes.js';
-import { QuizRouter } from './modules/quiz/routes.js';
+import { env } from './config/env';
+import { AuthRouter } from './modules/auth/routes';
+import { QuizRouter } from './modules/quiz/routes';
 
 const app = express();
 

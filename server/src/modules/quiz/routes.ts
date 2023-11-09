@@ -1,16 +1,16 @@
 import express from 'express';
 import { rateLimit } from 'express-rate-limit';
-import { pagination } from '../../middlewares/pagination.js';
-import { validateZodSchema } from '../../middlewares/validateZodSchema.js';
-import { verifySession } from '../../middlewares/verifySession.js';
+import { pagination } from '../../middlewares/pagination';
+import { validateZodSchema } from '../../middlewares/validateZodSchema';
+import { verifySession } from '../../middlewares/verifySession';
 import {
   createNewQuiz,
   createNewQuizResponse,
   getQuizById,
   getQuizStats,
   listAllQuizes,
-} from './controllers.js';
-import { createNewQuizSchema, createResponseSchema } from './validations.js';
+} from './controllers';
+import { createNewQuizSchema, createResponseSchema } from './validations';
 
 const QuizRouter = express.Router();
 

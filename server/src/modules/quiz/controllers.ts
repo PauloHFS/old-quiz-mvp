@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import { prismaClient } from '../../database/index.js';
-import { createNewQuizSchema, createResponseSchema } from './validations.js';
+import { prismaClient } from '../../database/index';
+import { createNewQuizSchema, createResponseSchema } from './validations';
 
 export const listAllQuizes = async (req: Request, res: Response) => {
   try {

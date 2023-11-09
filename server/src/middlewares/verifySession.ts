@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
-import { env } from '../config/env.js';
-import { prismaClient } from '../database/index.js';
+import { env } from '../config/env';
+import { prismaClient } from '../database/index';
 
 export const verifySession = async (
   req: Request,

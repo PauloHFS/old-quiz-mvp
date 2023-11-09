@@ -1,13 +1,9 @@
 import bycript from 'bcrypt';
 import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
-import { env } from '../../config/env.js';
-import { prismaClient } from '../../database/index.js';
-import {
-  loginSchema,
-  refreshTokenSchema,
-  signupSchema,
-} from './validations.js';
+import { env } from '../../config/env';
+import { prismaClient } from '../../database/index';
+import { loginSchema, refreshTokenSchema, signupSchema } from './validations';
 
 export const login = async (req: Request, res: Response) => {
   try {
