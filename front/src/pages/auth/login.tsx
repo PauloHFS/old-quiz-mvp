@@ -1,5 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
+import { redirect } from 'react-router-dom';
 import zod from 'zod';
 import { useLogin } from '../../hooks/useLogin';
 
@@ -30,12 +31,16 @@ export const Login = () => {
   const haveToRemember = watch('remember');
 
   const mutation = useLogin({
-    onSuccess: (_, { email }) => {
+    onSuccess: ({ accessToken, refreshToken }, { email }) => {
       if (haveToRemember) {
         localStorage.setItem('email', email);
       } else {
         localStorage.removeItem('email');
       }
+
+      localStorage.setItem('accessToken', accessToken);
+      localStorage.setItem('refreshToken', refreshToken);
+      redirect('/v1');
     },
     onError: error => {
       console.log(error);

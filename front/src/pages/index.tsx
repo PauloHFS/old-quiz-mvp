@@ -8,7 +8,7 @@ import { V1Layout } from './v1/layout';
 const hasSession = () => {
   const accessToken = localStorage.getItem('accessToken');
   const refreshToken = localStorage.getItem('refreshToken');
-  return !!accessToken && !!refreshToken;
+  return accessToken && refreshToken;
 };
 
 const redirectIfNotAuthenticated = async () => {
