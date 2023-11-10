@@ -1,15 +1,12 @@
 import { createBrowserRouter, redirect } from 'react-router-dom';
-import { supabase } from '../services/supabase';
-import { AuthPage } from './auth';
 import { Home } from './home';
 import { Root } from './root';
 import { v1Routes } from './v1';
 import { V1Layout } from './v1/layout';
 
+// TODO: Implement this function
 const hasSession = async () => {
-  const { data, error } = await supabase.auth.getSession();
-  if (error || data.session === null) return false;
-  return true;
+  return false;
 };
 
 const redirectIfNotAuthenticated = async () => {
@@ -26,14 +23,14 @@ export const router = createBrowserRouter([
         index: true,
         element: <Home />,
       },
-      {
-        path: 'auth',
-        element: <AuthPage />,
-        loader: async () => {
-          if (await hasSession()) return redirect('/v1');
-          return null;
-        },
-      },
+      // {
+      //   path: 'auth',
+      //   element: <AuthPage />,
+      //   loader: async () => {
+      //     if (await hasSession()) return redirect('/v1');
+      //     return null;
+      //   },
+      // },
       {
         path: 'v1',
         element: <V1Layout />,
