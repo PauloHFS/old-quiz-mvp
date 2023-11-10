@@ -1,6 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import { redirect } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import zod from 'zod';
 import { useLogin } from '../../hooks/useLogin';
 
@@ -16,6 +16,8 @@ const schema = zod.object({
 type FormValues = zod.infer<typeof schema>;
 
 export const Login = () => {
+  const navigate = useNavigate();
+
   const {
     handleSubmit,
     register,
@@ -40,7 +42,7 @@ export const Login = () => {
 
       localStorage.setItem('accessToken', accessToken);
       localStorage.setItem('refreshToken', refreshToken);
-      redirect('/v1');
+      navigate('/v1');
     },
     onError: error => {
       console.log(error);
