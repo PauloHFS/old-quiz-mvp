@@ -119,6 +119,19 @@ export const getQuizStats = async (req: Request, res: Response) => {
   try {
     const quizId = Number(req.params.id);
 
+    const quiz = await prismaClient.quiz.findUnique({
+      where: {
+        id: quizId,
+      },
+      include: {
+        Question: true,
+      },
+    });
+
+    if (!quiz) {
+      return res.status(404).json({ message: 'Quiz not found' });
+    }
+
     return res.json({
       quizId,
       message: 'stats',
