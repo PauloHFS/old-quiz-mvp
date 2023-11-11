@@ -113,13 +113,31 @@ export const refreshToken = async (req: Request, res: Response) => {
       return res.status(403).json({ message: 'Refresh Token inválido' });
     }
 
-    const decoded = jwt.verify(body.refreshToken, env.JWT_SECRET);
+    const { id, name, email, ...rest } = jwt.verify(
+      body.refreshToken,
+      env.JWT_SECRET
+    ) as {
+      id: number;
+      name: string;
+      email: string;
+      iat: number;
+      exp: number;
+    };
 
-    const accessToken = jwt.sign(decoded, env.JWT_SECRET);
+    const accessToken = jwt.sign(
+      {
+        id,
+        name,
+        email,
+      },
+      env.JWT_SECRET,
+      {
+        expiresIn: '15m',
+      }
+    );
 
     return res.json({ accessToken });
   } catch (error) {
-    console.log(error);
     return res.status(400).json(error);
   }
 };

@@ -12,7 +12,7 @@ export const verifySession = async (
     const accessToken = req.headers.authorization?.replace('Bearer ', '');
 
     if (!accessToken) {
-      return res.status(404).send();
+      return res.status(401).send();
     }
 
     const userData = jwt.verify(accessToken, env.JWT_SECRET);
@@ -31,7 +31,7 @@ export const verifySession = async (
     });
 
     if (!user) {
-      return res.status(404).send();
+      return res.status(401).send();
     }
 
     req.user = user;

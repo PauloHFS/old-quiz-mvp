@@ -11,47 +11,59 @@ export const apiClient = axios.create({
   },
 });
 
-apiClient.interceptors.request.use(config => {
-  if (config.url?.includes('auth')) {
+apiClient.interceptors.request.use(
+  config => {
+    if (config.url?.includes('auth')) {
+      return config;
+    }
+    const token = localStorage.getItem('accessToken');
+    if (token) {
+      config.headers['Authorization'] = `Bearer ${token}`;
+    }
     return config;
+  },
+  error => {
+    return Promise.reject(error);
   }
-  const token = localStorage.getItem('accessToken');
-  if (token) {
-    config.headers['Authorization'] = `Bearer ${token}`;
-  }
-  return config;
-});
+);
 
 let refreshing = false;
 
-apiClient.interceptors.response.use(async response => {
-  if (response.status !== 401) return response;
-  if (refreshing) return response;
+apiClient.interceptors.response.use(
+  response => {
+    return response;
+  },
+  error => {
+    console.log(error);
 
-  const refreshToken = localStorage.getItem('refreshToken');
+    if (error.response.status !== 401) return error;
+    if (refreshing) return error;
 
-  if (!refreshToken) {
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('refreshToken');
-    redirect('/login');
-  }
+    const refreshToken = localStorage.getItem('refreshToken');
 
-  refreshing = true;
-  apiClient
-    .post('/auth/refresh', {
-      refreshToken,
-    })
-    .then(res => {
-      localStorage.setItem('accessToken', res.data.accessToken);
-    })
-    .catch(() => {
+    if (!refreshToken) {
       localStorage.removeItem('accessToken');
       localStorage.removeItem('refreshToken');
-      redirect('/auth');
-    })
-    .finally(() => {
-      refreshing = false;
-    });
+      redirect('/login');
+    }
 
-  return response;
-});
+    refreshing = true;
+    apiClient
+      .post('/auth/refresh-token', {
+        refreshToken,
+      })
+      .then(res => {
+        localStorage.setItem('accessToken', res.data.accessToken);
+      })
+      .catch(() => {
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
+        redirect('/auth');
+      })
+      .finally(() => {
+        refreshing = false;
+      });
+
+    return Promise.reject(error);
+  }
+);
