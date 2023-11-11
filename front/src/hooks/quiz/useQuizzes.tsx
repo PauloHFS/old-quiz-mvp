@@ -1,19 +1,19 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { apiClient } from '../../services/api';
 
-type Quiz = {
+export type QuizzesResponse = Array<{
   id: number;
   name: string;
   createdAt: string;
   updatedAt: string;
-};
+}>;
 
 export const useQuizzes = () =>
   useInfiniteQuery({
     queryKey: ['quizzes'],
     queryFn: ({ pageParam }) =>
       apiClient
-        .get<Quiz[]>('/quiz', {
+        .get<QuizzesResponse>('/quiz', {
           params: {
             page: pageParam,
           },

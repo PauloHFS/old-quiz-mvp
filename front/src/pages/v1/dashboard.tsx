@@ -1,4 +1,6 @@
 import { useNavigate } from 'react-router-dom';
+import { Button } from '../../components/Button';
+import { QuizCard } from '../../components/QuizCard';
 import { useQuizzes } from '../../hooks/quiz/useQuizzes';
 
 export const Dashboard: React.FC = () => {
@@ -7,28 +9,18 @@ export const Dashboard: React.FC = () => {
 
   const onCreateNewQuizPress = () => navigate('/v1/new-quiz');
 
+  const onQuizCardClick = (id: number) => () => navigate(`/v1/quiz/${id}`);
+
   return (
     <main>
-      <button
-        type="button"
-        className="bg-green-500"
-        onClick={onCreateNewQuizPress}
-      >
-        Criar Novo Quiz
-      </button>
-      <div>
+      <Button.Primary onClick={onCreateNewQuizPress}>Criar Quiz</Button.Primary>
+      <div className="p-8 flex flex-wrap gap-8">
         {data?.pages.map(page => (
-          <ul>
+          <>
             {page.map(quiz => (
-              <li
-                onClick={() => {
-                  navigate(`/v1/quiz/${quiz.id}`);
-                }}
-              >
-                {quiz.name}
-              </li>
+              <QuizCard data={quiz} onClick={onQuizCardClick(quiz.id)} />
             ))}
-          </ul>
+          </>
         ))}
       </div>
     </main>
