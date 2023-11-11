@@ -13,6 +13,12 @@ export const listAllQuizes = async (req: Request, res: Response) => {
       where: {
         userId: user.id,
       },
+      select: {
+        id: true,
+        name: true,
+        createdAt: true,
+        updatedAt: true,
+      },
       take,
       skip,
     });
