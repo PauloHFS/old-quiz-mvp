@@ -1,4 +1,5 @@
 import express from 'express';
+import rateLimit from 'express-rate-limit';
 import { validateZodSchema } from '../../middlewares/validateZodSchema';
 import { login, logout, refreshToken, signup } from './controllers';
 import {
@@ -15,6 +16,7 @@ AuthRouter.post('/logout', validateZodSchema(logoutSchema), logout);
 AuthRouter.post('/signup', validateZodSchema(signupSchema), signup);
 AuthRouter.post(
   '/refresh-token',
+  rateLimit({ windowMs: 60 * 1000, max: 10 }),
   validateZodSchema(refreshTokenSchema),
   refreshToken
 );
