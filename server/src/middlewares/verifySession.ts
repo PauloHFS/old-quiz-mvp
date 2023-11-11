@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import { env } from '../config/env';
 import { prismaClient } from '../database/index';
+import { JwtData } from '../types';
 
 export const verifySession = async (
   req: Request,
@@ -15,13 +16,16 @@ export const verifySession = async (
       return res.status(401).send();
     }
 
-    const userData = jwt.verify(accessToken, env.JWT_SECRET);
+    const { id, email, name } = jwt.verify(
+      accessToken,
+      env.JWT_SECRET
+    ) as JwtData;
 
     const user = await prismaClient.user.findUnique({
       where: {
-        id: (userData as any).id,
-        email: (userData as any).email,
-        name: (userData as any).name,
+        id,
+        email,
+        name,
       },
       select: {
         id: true,
@@ -34,7 +38,7 @@ export const verifySession = async (
       return res.status(401).send();
     }
 
-    req.user = user;
+    req.body.user = user;
 
     return next();
   } catch (error) {

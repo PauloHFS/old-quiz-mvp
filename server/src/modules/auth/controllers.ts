@@ -3,6 +3,7 @@ import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import { env } from '../../config/env';
 import { prismaClient } from '../../database/index';
+import { JwtData } from '../../types';
 import { loginSchema, refreshTokenSchema, signupSchema } from './validations';
 
 export const login = async (req: Request, res: Response) => {
@@ -116,11 +117,7 @@ export const refreshToken = async (req: Request, res: Response) => {
     const { id, name, email } = jwt.verify(
       body.refreshToken,
       env.JWT_SECRET
-    ) as {
-      id: number;
-      name: string;
-      email: string;
-    };
+    ) as JwtData;
 
     const accessToken = jwt.sign(
       {
