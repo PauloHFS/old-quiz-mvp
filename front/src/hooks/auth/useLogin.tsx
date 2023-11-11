@@ -1,6 +1,6 @@
 import { UseMutationOptions, useMutation } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
-import { apiClient } from '../services/api';
+import { apiClient } from '../../services/api';
 
 export type LoginParams = {
   email: string;

@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { SyncLoader } from 'react-spinners';
-import { useLogout } from '../../hooks/useLogout';
+import { useLogout } from '../../hooks/auth/useLogout';
 
 export const Logout = () => {
   const navigate = useNavigate();
