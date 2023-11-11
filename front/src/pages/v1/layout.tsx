@@ -1,6 +1,7 @@
 import { Disclosure, Menu, Transition } from '@headlessui/react';
 import { Fragment } from 'react';
 import { Link, Outlet } from 'react-router-dom';
+import { classNames } from '../../components/utils';
 
 const user = {
   name: 'Tom Cook',
@@ -16,10 +17,6 @@ const userNavigation = [
   // { name: 'Settings', href: '#' },
   { name: 'Sign out', href: '/logout' },
 ];
-
-function classNames(...classes) {
-  return classes.filter(Boolean).join(' ');
-}
 
 export const V1Layout = () => {
   return (
