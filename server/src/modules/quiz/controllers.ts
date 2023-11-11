@@ -4,7 +4,7 @@ import { createNewQuizSchema, createResponseSchema } from './validations';
 
 export const listAllQuizes = async (req: Request, res: Response) => {
   try {
-    const user = req.user;
+    const user = req.body.user;
     const take = Number(req.query.take);
     const skip = Number(req.query.skip);
     // TODO add cursor
@@ -31,7 +31,7 @@ export const listAllQuizes = async (req: Request, res: Response) => {
 
 export const getQuizById = async (req: Request, res: Response) => {
   try {
-    const user = req.user;
+    const user = req.body.user;
 
     const quizId = Number(req.params.id);
 
@@ -57,10 +57,8 @@ export const getQuizById = async (req: Request, res: Response) => {
 
 export const createNewQuiz = async (req: Request, res: Response) => {
   try {
-    const user = req.user;
-
     const {
-      body: { nome, questoes },
+      body: { user, nome, questoes },
     } = createNewQuizSchema.parse(req);
 
     const quiz = await prismaClient.quiz.create({

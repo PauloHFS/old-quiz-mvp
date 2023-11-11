@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { userPayloadSchema } from '../../types';
 
 export const getQuizByIdSchema = z.object({
   params: z.object({
@@ -8,6 +9,7 @@ export const getQuizByIdSchema = z.object({
 
 export const createNewQuizSchema = z.object({
   body: z.object({
+    user: userPayloadSchema,
     nome: z
       .string()
       .min(2, 'nome precisa ter no mínimo 2 caracteres')
