@@ -7,7 +7,7 @@ export const listAllQuizes = async (req: Request, res: Response) => {
     const user = req.user;
     const take = Number(req.query.take);
     const skip = Number(req.query.skip);
-    // todo: add cursor
+    // TODO add cursor
 
     const quizes = await prismaClient.quiz.findMany({
       where: {
@@ -103,6 +103,7 @@ export const createNewQuizResponse = async (req: Request, res: Response) => {
       data: responses.map(({ questionId, alternativa }) => ({
         alternative: alternativa,
         questionId,
+        responseUserInfoId: userInfo.id,
       })),
     });
 
