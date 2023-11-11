@@ -1,6 +1,5 @@
 import express from 'express';
 import { rateLimit } from 'express-rate-limit';
-import { pagination } from '../../middlewares/pagination';
 import { validateZodSchema } from '../../middlewares/validateZodSchema';
 import { verifySession } from '../../middlewares/verifySession';
 import {
@@ -14,11 +13,17 @@ import {
   createNewQuizSchema,
   createResponseSchema,
   getQuizByIdSchema,
+  listAllQuizesSchema,
 } from './validations';
 
 const QuizRouter = express.Router();
 
-QuizRouter.get('/', verifySession, pagination(), listAllQuizes);
+QuizRouter.get(
+  '/',
+  verifySession,
+  validateZodSchema(listAllQuizesSchema),
+  listAllQuizes
+);
 QuizRouter.get(
   '/:id',
   verifySession,

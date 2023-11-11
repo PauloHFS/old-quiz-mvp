@@ -1,13 +1,18 @@
 import { Request, Response } from 'express';
 import { prismaClient } from '../../database/index';
-import { createNewQuizSchema, createResponseSchema } from './validations';
+import {
+  createNewQuizSchema,
+  createResponseSchema,
+  listAllQuizesSchema,
+} from './validations';
 
 export const listAllQuizes = async (req: Request, res: Response) => {
   try {
-    const user = req.body.user;
-    const take = Number(req.query.take);
-    const skip = Number(req.query.skip);
     // TODO add cursor
+    const {
+      body: { user },
+      query: { skip, take },
+    } = listAllQuizesSchema.parse(req);
 
     const quizes = await prismaClient.quiz.findMany({
       where: {
@@ -31,6 +36,7 @@ export const listAllQuizes = async (req: Request, res: Response) => {
 
 export const getQuizById = async (req: Request, res: Response) => {
   try {
+    // TODO Add validation
     const user = req.body.user;
 
     const quizId = Number(req.params.id);
@@ -88,17 +94,18 @@ export const createNewQuiz = async (req: Request, res: Response) => {
 export const createNewQuizResponse = async (req: Request, res: Response) => {
   try {
     const {
-      body: { responses, userData },
-      params,
+      params: { id: quizId },
+      body: {
+        responses,
+        userData: { age, gender, geolocation },
+      },
     } = createResponseSchema.parse(req);
 
-    const quizId = Number(params.id);
-
-    const userInfo = await prismaClient.responseUserInfo.create({
+    const responseUserInfo = await prismaClient.responseUserInfo.create({
       data: {
-        age: userData.age,
-        gender: userData.gender,
-        geolocation: userData.geolocation,
+        age,
+        gender,
+        geolocation,
         quizId,
       },
     });
@@ -107,12 +114,12 @@ export const createNewQuizResponse = async (req: Request, res: Response) => {
       data: responses.map(({ questionId, alternativa }) => ({
         alternative: alternativa,
         questionId,
-        responseUserInfoId: userInfo.id,
+        responseUserInfoId: responseUserInfo.id,
       })),
     });
 
     return res.status(201).json({
-      userInfo,
+      responseUserInfo,
       responses: count,
     });
   } catch (error) {
@@ -122,6 +129,7 @@ export const createNewQuizResponse = async (req: Request, res: Response) => {
 
 export const getQuizStats = async (req: Request, res: Response) => {
   try {
+    // TODO Add validation
     const quizId = Number(req.params.id);
 
     const quiz = await prismaClient.quiz.findUnique({

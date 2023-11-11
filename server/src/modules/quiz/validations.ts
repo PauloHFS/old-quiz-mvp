@@ -1,9 +1,16 @@
 import { z } from 'zod';
-import { userPayloadSchema } from '../../types';
+import { paginationSchema, userPayloadSchema } from '../../types';
+
+export const listAllQuizesSchema = z.object({
+  query: paginationSchema.merge(z.object({})),
+  body: z.object({
+    user: userPayloadSchema,
+  }),
+});
 
 export const getQuizByIdSchema = z.object({
   params: z.object({
-    id: z.string(),
+    id: z.string().transform(Number),
   }),
 });
 
@@ -35,7 +42,7 @@ export const createNewQuizSchema = z.object({
 
 export const createResponseSchema = z.object({
   params: z.object({
-    id: z.string(),
+    id: z.string().transform(Number),
   }),
   body: z.object({
     userData: z.object({
