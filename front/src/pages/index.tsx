@@ -1,5 +1,6 @@
 import { createBrowserRouter, redirect } from 'react-router-dom';
 import { authRoutes } from './auth';
+import { Logout } from './auth/logout';
 import { Home } from './home';
 import { Root } from './root';
 import { v1Routes } from './v1';
@@ -38,6 +39,10 @@ export const router = createBrowserRouter([
         element: <V1Layout />,
         loader: redirectIfNotAuthenticated,
         children: v1Routes,
+      },
+      {
+        path: 'logout',
+        element: <Logout />,
       },
     ],
   },
