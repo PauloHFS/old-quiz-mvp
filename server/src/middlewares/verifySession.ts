@@ -38,6 +38,10 @@ export const verifySession = async (
 
     return next();
   } catch (error) {
+    if (error instanceof jwt.TokenExpiredError) {
+      return res.status(401).json({ message: 'Sessão expirada' });
+    }
+
     return res.status(401).json(error);
   }
 };

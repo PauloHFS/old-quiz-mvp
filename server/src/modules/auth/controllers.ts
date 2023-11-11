@@ -113,15 +113,13 @@ export const refreshToken = async (req: Request, res: Response) => {
       return res.status(403).json({ message: 'Refresh Token inválido' });
     }
 
-    const { id, name, email, ...rest } = jwt.verify(
+    const { id, name, email } = jwt.verify(
       body.refreshToken,
       env.JWT_SECRET
     ) as {
       id: number;
       name: string;
       email: string;
-      iat: number;
-      exp: number;
     };
 
     const accessToken = jwt.sign(
