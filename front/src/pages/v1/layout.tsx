@@ -1,6 +1,6 @@
 import { Disclosure, Menu, Transition } from '@headlessui/react';
 import { Fragment } from 'react';
-import { Outlet } from 'react-router-dom';
+import { Link, Outlet } from 'react-router-dom';
 
 const user = {
   name: 'Tom Cook',
@@ -50,9 +50,9 @@ export const V1Layout = () => {
                     <div className="hidden md:block">
                       <div className="ml-10 flex items-baseline space-x-4">
                         {navigation.map(item => (
-                          <a
+                          <Link
                             key={item.name}
-                            href={item.href}
+                            to={item.href}
                             className={classNames(
                               item.current
                                 ? 'bg-gray-900 text-white'
@@ -62,7 +62,7 @@ export const V1Layout = () => {
                             aria-current={item.current ? 'page' : undefined}
                           >
                             {item.name}
-                          </a>
+                          </Link>
                         ))}
                       </div>
                     </div>
@@ -104,15 +104,15 @@ export const V1Layout = () => {
                             {userNavigation.map(item => (
                               <Menu.Item key={item.name}>
                                 {({ active }) => (
-                                  <a
-                                    href={item.href}
+                                  <Link
+                                    to={item.href}
                                     className={classNames(
                                       active ? 'bg-gray-100' : '',
                                       'block px-4 py-2 text-sm text-gray-700'
                                     )}
                                   >
                                     {item.name}
-                                  </a>
+                                  </Link>
                                 )}
                               </Menu.Item>
                             ))}
