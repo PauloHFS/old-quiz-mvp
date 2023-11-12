@@ -2,18 +2,19 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { Button } from '../../components/Button';
+import { useCreateQuiz } from '../../hooks/quiz/useCreateQuiz';
 
 const schema = z.object({
-  name: z.string().min(1),
-  questions: z
+  nome: z.string().min(1),
+  questoes: z
     .array(
       z.object({
-        title: z.string().min(1, 'A questão está vazia!'),
-        alternatives: z
+        titulo: z.string().min(1, 'A questão está vazia!'),
+        alternativas: z
           .array(z.string().min(1, 'A alternativa está vazia!'))
           .min(2)
           .max(4),
-        correctID: z.number().int(),
+        correctIndex: z.number().int(),
       })
     )
     .min(1, 'Adicione pelo menos uma questão!')
@@ -33,31 +34,34 @@ export const NewQuiz = () => {
   } = useForm<NewQuizFormData>({
     resolver: zodResolver(schema),
     defaultValues: {
-      name: '',
-      questions: [],
+      nome: '',
+      questoes: [],
     },
   });
 
+  const mutation = useCreateQuiz();
+
   const onSubmit = (data: NewQuizFormData) => {
     console.log(data);
+    mutation.mutate(data);
   };
 
-  const defaultQuestion = {
-    title: '',
-    alternatives: ['', ''],
-    correctID: 0,
+  const defaultQuestion: NewQuizFormData['questoes'][number] = {
+    titulo: '',
+    alternativas: ['', ''],
+    correctIndex: 0,
   };
 
-  const questions = watch('questions');
+  const questions = watch('questoes');
   type SetQuestions = (
-    p: NewQuizFormData['questions']
-  ) => NewQuizFormData['questions'];
-  const setQuestions = (args: NewQuizFormData['questions'] | SetQuestions) => {
+    p: NewQuizFormData['questoes']
+  ) => NewQuizFormData['questoes'];
+  const setQuestions = (args: NewQuizFormData['questoes'] | SetQuestions) => {
     if (typeof args === 'function') {
-      setValue('questions', args(questions));
+      setValue('questoes', args(questions));
       return;
     }
-    setValue('questions', args);
+    setValue('questoes', args);
   };
 
   const addQuestion = () => {
@@ -70,7 +74,7 @@ export const NewQuiz = () => {
       ...prev.slice(0, questionIndex),
       ...prev.slice(questionIndex + 1),
     ]);
-    trigger('questions');
+    trigger('questoes');
   };
 
   const addAlternative = (questionIndex: number) => {
@@ -78,7 +82,7 @@ export const NewQuiz = () => {
       const question = prev[questionIndex];
       const newQuestion = {
         ...question,
-        alternatives: [...question.alternatives, ''],
+        alternativas: [...question.alternativas, ''],
       };
       return [
         ...prev.slice(0, questionIndex),
@@ -86,7 +90,7 @@ export const NewQuiz = () => {
         ...prev.slice(questionIndex + 1),
       ];
     });
-    trigger(`questions.${questionIndex}.alternatives`);
+    trigger(`questoes.${questionIndex}.alternativas`);
   };
 
   const removeAlternative = (
@@ -97,9 +101,9 @@ export const NewQuiz = () => {
       const question = prev[questionIndex];
       const newQuestion = {
         ...question,
-        alternatives: [
-          ...question.alternatives.slice(0, alternativeIndex),
-          ...question.alternatives.slice(alternativeIndex + 1),
+        alternativas: [
+          ...question.alternativas.slice(0, alternativeIndex),
+          ...question.alternativas.slice(alternativeIndex + 1),
         ],
       };
       return [
@@ -108,69 +112,55 @@ export const NewQuiz = () => {
         ...prev.slice(questionIndex + 1),
       ];
     });
-    trigger(`questions.${questionIndex}.alternatives`);
+    trigger(`questoes.${questionIndex}.alternativas`);
   };
 
   const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-
     const nameParts = name.split('.');
-    console.log(nameParts);
 
     const questionIndex = Number(nameParts[1]);
     const question = questions[questionIndex];
 
-    if (nameParts[2] === 'title') {
-      const newQuestion = {
-        ...question,
-        title: value,
-      };
-
-      const newQuestions = [
+    if (nameParts[2] === 'titulo') {
+      setQuestions([
         ...questions.slice(0, questionIndex),
-        newQuestion,
+        {
+          ...question,
+          titulo: value,
+        },
         ...questions.slice(questionIndex + 1),
-      ];
-
-      setQuestions(newQuestions);
-      trigger(`questions.${questionIndex}.title`);
+      ]);
+      trigger(`questoes.${questionIndex}.titulo`);
       return;
-    } else if (nameParts[2] === 'alternatives') {
+    } else if (nameParts[2] === 'alternativas') {
       const alternativeIndex = Number(nameParts[3]);
 
       if (nameParts?.[4] === undefined) {
-        const newQuestion = {
-          ...question,
-          alternatives: [
-            ...question.alternatives.slice(0, alternativeIndex),
-            value,
-            ...question.alternatives.slice(alternativeIndex + 1),
-          ],
-        };
-
-        const newQuestions = [
+        setQuestions([
           ...questions.slice(0, questionIndex),
-          newQuestion,
+          {
+            ...question,
+            alternativas: [
+              ...question.alternativas.slice(0, alternativeIndex),
+              value,
+              ...question.alternativas.slice(alternativeIndex + 1),
+            ],
+          },
           ...questions.slice(questionIndex + 1),
-        ];
-
-        setQuestions(newQuestions);
-        trigger(`questions.${questionIndex}.alternatives`);
+        ]);
+        trigger(`questoes.${questionIndex}.alternativas.${alternativeIndex}`);
         return;
-      } else if (nameParts[4] === 'correctID') {
-        const newQuestion = {
-          ...question,
-          correctID: alternativeIndex,
-        };
-
-        const newQuestions = [
+      } else if (nameParts[4] === 'correctIndex') {
+        setQuestions([
           ...questions.slice(0, questionIndex),
-          newQuestion,
+          {
+            ...question,
+            correctIndex: alternativeIndex,
+          },
           ...questions.slice(questionIndex + 1),
-        ];
-
-        setQuestions(newQuestions);
-        trigger(`questions.${questionIndex}.alternatives`);
+        ]);
+        trigger(`questoes.${questionIndex}.alternativas.${alternativeIndex}`);
         return;
       }
     }
@@ -182,15 +172,15 @@ export const NewQuiz = () => {
         <label htmlFor="name" className="flex flex-col">
           1. Adicione o nome do seu quiz:
           <input
-            {...register('name')}
+            {...register('nome')}
             placeholder="Pesquisa do Evento X"
             className="border-2 border-gray-300"
           />
-          {errors.name && <span>{errors.name.message}</span>}
+          {errors.nome && <span>{errors.nome.message}</span>}
         </label>
         <div>
           <h2>2. Adicione questões da sua pesquisa:</h2>
-          {errors.questions && <span>{errors.questions.message}</span>}
+          {errors.questoes && <span>{errors.questoes.message}</span>}
         </div>
         {questions.map((question, questionIndex) => (
           <div key={questionIndex}>
@@ -199,15 +189,15 @@ export const NewQuiz = () => {
               <div className="flex flex-col">
                 <input
                   type="text"
-                  name={`questions.${questionIndex}.title`}
+                  name={`questoes.${questionIndex}.titulo`}
                   placeholder="Você gostou do evento?"
                   className="border-b-2 border-gray-300"
-                  value={question.title}
+                  value={question.titulo}
                   onChange={handleFormChange}
                 />
-                {errors.questions?.[questionIndex]?.title && (
+                {errors.questoes?.[questionIndex]?.titulo && (
                   <span>
-                    {errors.questions?.[questionIndex]?.title?.message}
+                    {errors.questoes?.[questionIndex]?.titulo?.message}
                   </span>
                 )}
               </div>
@@ -218,7 +208,7 @@ export const NewQuiz = () => {
               </div>
             </div>
             <div>
-              {question.alternatives.map((alternative, alternativeIndex) => (
+              {question.alternativas.map((alternative, alternativeIndex) => (
                 <div
                   key={questionIndex + '.' + alternativeIndex}
                   className="flex gap-2"
@@ -231,16 +221,16 @@ export const NewQuiz = () => {
                       type="text"
                       placeholder={`Sim, não, talvez...`}
                       className="rounded-md border-b-2 border-gray-300"
-                      name={`questions.${questionIndex}.alternatives.${alternativeIndex}`}
+                      name={`questoes.${questionIndex}.alternativas.${alternativeIndex}`}
                       value={alternative}
                       onChange={handleFormChange}
                     />
-                    {errors.questions?.[questionIndex]?.alternatives?.[
+                    {errors.questoes?.[questionIndex]?.alternativas?.[
                       alternativeIndex
                     ] && (
                       <span>
                         {
-                          errors.questions?.[questionIndex]?.alternatives?.[
+                          errors.questoes?.[questionIndex]?.alternativas?.[
                             alternativeIndex
                           ]?.message
                         }
@@ -249,8 +239,8 @@ export const NewQuiz = () => {
                   </div>
                   <input
                     type="radio"
-                    name={`questions.${questionIndex}.alternatives.${alternativeIndex}.correctID`}
-                    checked={alternativeIndex === question.correctID}
+                    name={`questoes.${questionIndex}.alternativas.${alternativeIndex}.correctIndex`}
+                    checked={alternativeIndex === question.correctIndex}
                     onChange={handleFormChange}
                   />
                   <div>
