@@ -42,7 +42,6 @@ export const NewQuiz = () => {
   const mutation = useCreateQuiz();
 
   const onSubmit = (data: NewQuizFormData) => {
-    console.log(data);
     mutation.mutate(data);
   };
 

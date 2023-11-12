@@ -1,4 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import * as z from 'zod';
 import { apiClient } from '../../services/api';
 
@@ -28,7 +30,17 @@ const quizSchema = z.object({
 type Quiz = z.infer<typeof quizSchema>;
 
 export const useCreateQuiz = () => {
+  const navigate = useNavigate();
+
   return useMutation({
     mutationFn: (data: Quiz) => apiClient.post('/quiz', data),
+    onSuccess: () => {
+      toast.success('Quiz criado com sucesso!');
+      navigate('/v1');
+    },
+    onError: error => {
+      toast.error('Erro ao criar o quiz! Tente novamente.');
+      console.log(error);
+    },
   });
 };
