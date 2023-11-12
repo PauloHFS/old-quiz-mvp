@@ -15,16 +15,9 @@ const schema = z.object({
   ),
 });
 
-const schema2 = z.array(
-  z.object({
-    title: z.string().min(1),
-    alternatives: z.array(z.string().min(1)),
-    correctID: z.number().int().min(0),
-  })
-);
+const regexIndex = /\[(\d+)\]/;
 
 type NewQuizFormData = z.infer<typeof schema>;
-type QuestionFormData = z.infer<typeof schema2>;
 
 export const NewQuiz = () => {
   const {
@@ -37,34 +30,131 @@ export const NewQuiz = () => {
 
   const onSubmit = (data: NewQuizFormData) => {
     console.log(data);
-
-    // Need to create a function to send data on RPC to supabase
   };
 
-  const [title, setTitle] = useState('');
-  const [questions, setQuestions] = useState<QuestionFormData>([]);
-
-  const [alternativa, setAlternativa] = useState<{
-    title: string;
-    correct: boolean;
-  }>({
+  const defaultQuestion = {
     title: '',
-    correct: false,
-  });
-  const [alternativas, setAlternativas] = useState<string[]>([]);
-
-  const handleAddAlternative = () => {
-    setAlternativas(prev => [...prev, alternativa.title]);
-    setAlternativa({ title: '', correct: false });
+    alternatives: ['', ''],
+    correctID: 0,
   };
 
-  const handleAddQuestion = () => {
+  const [questions, setQuestions] = useState<NewQuizFormData['questions']>([]);
+
+  const addQuestion = () => {
+    setQuestions(prev => [...prev, defaultQuestion]);
+  };
+
+  const removeQuestion = (questionIndex: number) => {
     setQuestions(prev => [
-      ...prev,
-      { title, alternatives: alternativas, correctID: 0 },
+      ...prev.slice(0, questionIndex),
+      ...prev.slice(questionIndex + 1),
     ]);
-    setTitle('');
-    setAlternativas([]);
+  };
+
+  const addAlternative = (questionIndex: number) => {
+    setQuestions(prev => {
+      const question = prev[questionIndex];
+      const newQuestion = {
+        ...question,
+        alternatives: [...question.alternatives, ''],
+      };
+      return [
+        ...prev.slice(0, questionIndex),
+        newQuestion,
+        ...prev.slice(questionIndex + 1),
+      ];
+    });
+  };
+
+  const removeAlternative = (
+    questionIndex: number,
+    alternativeIndex: number
+  ) => {
+    setQuestions(prev => {
+      const question = prev[questionIndex];
+      const newQuestion = {
+        ...question,
+        alternatives: [
+          ...question.alternatives.slice(0, alternativeIndex),
+          ...question.alternatives.slice(alternativeIndex + 1),
+        ],
+      };
+      return [
+        ...prev.slice(0, questionIndex),
+        newQuestion,
+        ...prev.slice(questionIndex + 1),
+      ];
+    });
+  };
+
+  const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+
+    const nameParts = name.split('.');
+    const indexMatch = nameParts[0].match(regexIndex)?.[1];
+    if (indexMatch === undefined) {
+      return;
+    }
+
+    const questionIndex = Number(indexMatch);
+    const question = questions[questionIndex];
+
+    if (nameParts[1] === 'title') {
+      const newQuestion = {
+        ...question,
+        title: value,
+      };
+
+      const newQuestions = [
+        ...questions.slice(0, questionIndex),
+        newQuestion,
+        ...questions.slice(questionIndex + 1),
+      ];
+
+      setQuestions(newQuestions);
+      return;
+    } else if (nameParts[1].includes('alternatives')) {
+      const indexMatch = nameParts[1].match(regexIndex)?.[1];
+      if (indexMatch === undefined) {
+        return;
+      }
+
+      const alternativeIndex = Number(indexMatch);
+
+      if (nameParts[2] === 'title') {
+        const newQuestion = {
+          ...question,
+          alternatives: [
+            ...question.alternatives.slice(0, alternativeIndex),
+            value,
+            ...question.alternatives.slice(alternativeIndex + 1),
+          ],
+        };
+
+        const newQuestions = [
+          ...questions.slice(0, questionIndex),
+          newQuestion,
+          ...questions.slice(questionIndex + 1),
+        ];
+
+        setQuestions(newQuestions);
+        return;
+      } else if (nameParts[2] === 'correctID') {
+        const newQuestion = {
+          ...question,
+          correctID: alternativeIndex,
+        };
+
+        const newQuestions = [
+          ...questions.slice(0, questionIndex),
+          newQuestion,
+          ...questions.slice(questionIndex + 1),
+        ];
+
+        setQuestions(newQuestions);
+        return;
+      }
+    }
   };
 
   return (
@@ -72,82 +162,77 @@ export const NewQuiz = () => {
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col">
         <label htmlFor="name" className="flex flex-col">
           1. Adicione o nome do seu quiz:
-          <input {...register('name')} />
+          <input
+            {...register('name')}
+            placeholder="Pesquisa do Evento X"
+            className="border-2 border-gray-300"
+          />
           {errors.name && <span>{errors.name.message}</span>}
         </label>
-        <div className="border-2 border-black p-5">
-          <h2>Questões</h2>
-          <div>
-            <label htmlFor="title" className="flex flex-col">
-              2. Adiciona o titulo da questão:
+        <div>
+          <h2>2. Adicione questões da sua pesquisa:</h2>
+        </div>
+        {questions.map((question, questionIndex) => (
+          <div key={questionIndex}>
+            <div className="flex gap-2">
+              <h3>{`${questionIndex + 1}. `}</h3>
               <input
                 type="text"
-                value={title}
-                placeholder="Você conhece nossa empresa?"
-                onChange={e => setTitle(e.target.value)}
+                name={`questions[${questionIndex}].title`}
+                placeholder="Você gostou do evento?"
+                className="border-b-2 border-gray-300"
+                value={question.title}
+                onChange={handleFormChange}
               />
-            </label>
-            <label htmlFor="alternatives" className="flex flex-col">
-              3. Adicione as alternativas:
-              <div className="flex flex-col items-start gap-2">
-                <label htmlFor="alternative" className="flex flex-col">
-                  3.1 Adicione uma alternativa:
+              <Button.Primary onClick={() => removeQuestion(questionIndex)}>
+                -
+              </Button.Primary>
+            </div>
+            <div>
+              {question.alternatives.map((alternative, alternativeIndex) => (
+                <div
+                  key={questionIndex + '.' + alternativeIndex}
+                  className="flex gap-2"
+                >
+                  <h4>
+                    {questionIndex + 1}.{alternativeIndex + 1}.{' '}
+                  </h4>
                   <input
                     type="text"
-                    value={alternativa.title}
-                    placeholder="Sim"
-                    onChange={e => {
-                      setAlternativa(prev => ({
-                        ...prev,
-                        title: e.target.value,
-                      }));
-                    }}
+                    placeholder={`Sim, não, talvez...`}
+                    className="rounded-md border-b-2 border-gray-300"
+                    name={`questions[${questionIndex}].alternatives[${alternativeIndex}].title`}
+                    value={alternative}
+                    onChange={handleFormChange}
                   />
-                </label>
-                <label htmlFor="correct">
-                  3.2 É a alternativa correta?
                   <input
-                    type="checkbox"
-                    checked={alternativa.correct}
-                    onChange={() => {
-                      setAlternativa(prev => ({
-                        ...prev,
-                        correct: !prev.correct,
-                      }));
-                    }}
+                    type="radio"
+                    name={`questions[${questionIndex}].alternatives[${alternativeIndex}].correctID`}
+                    checked={alternativeIndex === question.correctID}
+                    onChange={handleFormChange}
                   />
-                </label>
-                <Button.Primary type="button" onClick={handleAddAlternative}>
-                  +
-                </Button.Primary>
-              </div>
-              <div className="flex p-3">
-                {alternativas.map(alt => (
-                  <div key={alt} className="flex items-baseline gap-4">
-                    <p>{alt}</p>
-                    <Button.Primary type="button">-</Button.Primary>
-                  </div>
-                ))}
-              </div>
-            </label>
-            <Button.Primary type="button" onClick={handleAddQuestion}>
-              Adicionar Questão
+                  <Button.Primary
+                    onClick={() =>
+                      removeAlternative(questionIndex, alternativeIndex)
+                    }
+                  >
+                    -
+                  </Button.Primary>
+                </div>
+              ))}
+            </div>
+            <Button.Primary onClick={() => addAlternative(questionIndex)}>
+              Adicionar Alternativa
             </Button.Primary>
           </div>
-          {questions.map(({ title, alternatives }, index) => (
-            <div key={title}>
-              <h3>
-                {index + 1}. {title}
-              </h3>
-              <ul>
-                {alternatives.map(alt => (
-                  <li key={alt}>{alt}</li>
-                ))}
-              </ul>
-            </div>
-          ))}
+        ))}
+        <div>
+          <Button.Primary onClick={addQuestion}>Criar Questão</Button.Primary>
         </div>
-        <Button.Primary type="submit">Criar Quiz</Button.Primary>
+
+        <div className="self-center">
+          <Button.Primary type="submit">Criar Quiz</Button.Primary>
+        </div>
       </form>
     </main>
   );
