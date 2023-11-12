@@ -1,12 +1,19 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { apiClient } from '../../services/api';
 
-export type QuizzesResponse = Array<{
-  id: number;
-  name: string;
-  createdAt: string;
-  updatedAt: string;
-}>;
+export type QuizzesResponse = {
+  data: Array<{
+    id: number;
+    name: string;
+    createdAt: string;
+    updatedAt: string;
+  }>;
+  meta: {
+    skip: number;
+    take: number;
+    count: number;
+  };
+};
 
 export const useQuizzes = () =>
   useInfiniteQuery({
@@ -15,10 +22,14 @@ export const useQuizzes = () =>
       apiClient
         .get<QuizzesResponse>('/quiz', {
           params: {
-            page: pageParam,
+            skip: pageParam,
+            take: 10,
           },
         })
         .then(res => res.data),
     initialPageParam: 0,
-    getNextPageParam: lastPage => lastPage.length + 1,
+    getNextPageParam: ({ meta: { skip, take, count } }) =>
+      skip + take < count ? skip + take : undefined,
+    getPreviousPageParam: ({ meta: { skip, take } }) =>
+      skip - take >= 0 ? skip - take : undefined,
   });

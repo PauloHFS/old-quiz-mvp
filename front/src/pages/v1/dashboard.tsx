@@ -17,7 +17,7 @@ export const Dashboard: React.FC = () => {
       <div className="p-8 flex flex-wrap gap-8">
         {data?.pages.map(page => (
           <>
-            {page.map(quiz => (
+            {page.data.map(quiz => (
               <QuizCard data={quiz} onClick={onQuizCardClick(quiz.id)} />
             ))}
           </>

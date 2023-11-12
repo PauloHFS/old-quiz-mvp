@@ -28,7 +28,20 @@ export const listAllQuizes = async (req: Request, res: Response) => {
       skip,
     });
 
-    return res.json(quizes);
+    const count = await prismaClient.quiz.count({
+      where: {
+        userId: user.id,
+      },
+    });
+
+    return res.json({
+      data: quizes,
+      meta: {
+        skip,
+        take,
+        count,
+      },
+    });
   } catch (error) {
     return res.status(400).json(error);
   }
