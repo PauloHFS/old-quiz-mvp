@@ -40,19 +40,14 @@ async function main() {
             Question: {
               create: [
                 {
-                  title: 'Qual o nome do criador do Quiz?',
-                  alternatives: [
-                    'Paulo Hernane',
-                    'Paulo',
-                    'Hernane',
-                    'Paulo Hernane de Oliveira',
-                  ],
+                  title: 'Bom dia meu?',
+                  alternatives: ['Prefeito', 'Povo', 'Amor'],
                   correctIndex: 0,
                 },
                 {
                   title: 'Que dia é hoje?',
                   alternatives: ['Segunda', 'Terça', 'Quarta', 'Quinta'],
-                  correctIndex: 1,
+                  correctIndex: 3,
                 },
               ],
             },
