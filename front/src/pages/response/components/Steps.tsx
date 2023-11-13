@@ -1,6 +1,6 @@
 import { RadioGroup } from '@headlessui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { Button } from '../../../components/Button';
@@ -49,7 +49,7 @@ const formSchema = z.object({
   responses: z.array(
     z.object({
       questionId: z.number().min(1),
-      alternativa: z.string(),
+      alternativa: z.string().min(1),
     })
   ),
 });
@@ -92,13 +92,22 @@ export const Steps: React.FC<StepsProps> = ({ quiz }) => {
 
   const onSubmit = (data: FormValues) => {
     console.log(data);
+    setStep(2);
+    setTimeout(() => {
+      reset();
+      setStep(0);
+      setQuestionIndex(0);
+    }, 5 * 1000);
   };
 
-  const prepareResponse = (index: number) =>
+  const prepareResponse = (index: number) => {
+    if (index >= quiz.Question.length) return;
+
     setValue(`responses.${index}`, {
       alternativa: '',
       questionId: quiz.Question[index].id,
     });
+  };
 
   const handleSaveUserData = () => {
     trigger('userData').then(isValid => {
@@ -112,29 +121,17 @@ export const Steps: React.FC<StepsProps> = ({ quiz }) => {
   const handleSaveResponse = () => {
     trigger(`responses.${questionIndex}`).then(isValid => {
       if (isValid) {
-        if (questionIndex === quiz.Question.length - 1) return;
         prepareResponse(questionIndex + 1);
-        nextQuestion();
+
+        if (questionIndex >= quiz.Question.length - 1) handleSubmit(onSubmit)();
+        else nextQuestion();
       }
     });
   };
 
-  useEffect(() => {
-    if (step === 2) {
-      setTimeout(() => {
-        reset();
-        setStep(0);
-        setQuestionIndex(0);
-      }, 5 * 1000);
-    }
-  }, [step, reset]);
-
   return (
     <main className="h-screen bg-green-300 p-4">
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="px-4 py-8 rounded-lg bg-white"
-      >
+      <form className="px-4 py-8 rounded-lg bg-white">
         {step === 0 && (
           <div className="flex flex-col gap-4">
             <div>
@@ -237,7 +234,9 @@ export const Steps: React.FC<StepsProps> = ({ quiz }) => {
             )}
             <div className="flex justify-center">
               <Button.Primary onClick={handleSaveResponse}>
-                Responder
+                {questionIndex === quiz.Question.length - 1
+                  ? 'Finalizar'
+                  : 'Próximo'}
               </Button.Primary>
             </div>
           </div>
