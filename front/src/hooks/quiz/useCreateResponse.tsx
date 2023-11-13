@@ -2,7 +2,7 @@ import { useMutation } from '@tanstack/react-query';
 import * as z from 'zod';
 import { apiClient } from '../../services/api';
 
-const responseSchema = z.object({
+export const responseSchema = z.object({
   quizId: z.number(),
   userData: z.object({
     gender: z.string(),
@@ -17,7 +17,7 @@ const responseSchema = z.object({
   ),
 });
 
-type Response = z.infer<typeof responseSchema>;
+export type Response = z.infer<typeof responseSchema>;
 
 export const useCreateResponse = () => {
   return useMutation({

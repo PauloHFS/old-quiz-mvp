@@ -2,6 +2,7 @@ import { createBrowserRouter, redirect } from 'react-router-dom';
 import { authRoutes } from './auth';
 import { Logout } from './auth/logout';
 import { Home } from './home';
+import { Response } from './response/response';
 import { Root } from './root';
 import { v1Routes } from './v1';
 import { V1Layout } from './v1/layout';
@@ -43,6 +44,10 @@ export const router = createBrowserRouter([
       {
         path: 'logout',
         element: <Logout />,
+      },
+      {
+        path: '/:quizId',
+        element: <Response />,
       },
     ],
   },

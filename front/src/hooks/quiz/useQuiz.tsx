@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { apiClient } from '../../services/api';
 
-type Response = {
+export type QuizResponse = {
   id: number;
   userId: number;
   name: string;
@@ -18,9 +18,10 @@ type Response = {
   }[];
 };
 
-export const useQuiz = (quizId: string) =>
-  useQuery({
+export const useQuiz = (quizId: string) => {
+  return useQuery({
     queryKey: ['quiz', quizId],
     queryFn: () =>
-      apiClient.get<Response>(`/quiz/${quizId}`).then(res => res.data),
+      apiClient.get<QuizResponse>(`/quiz/${quizId}`).then(res => res.data),
   });
+};
