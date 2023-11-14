@@ -214,6 +214,7 @@ export const Steps: React.FC<StepsProps> = ({ quiz }) => {
               value={watch(`responses.${questionIndex}.alternativa`)}
               onChange={value => {
                 setValue(`responses.${questionIndex}.alternativa`, value);
+                trigger(`responses.${questionIndex}.alternativa`);
               }}
             >
               <RadioGroup.Label>
@@ -229,8 +230,10 @@ export const Steps: React.FC<StepsProps> = ({ quiz }) => {
                 </RadioGroup.Option>
               ))}
             </RadioGroup>
-            {errors.responses?.[questionIndex] && (
-              <span>{errors.responses?.[questionIndex]?.message}</span>
+            {errors.responses?.[questionIndex]?.alternativa?.message && (
+              <span>
+                {errors.responses?.[questionIndex]?.alternativa?.message}
+              </span>
             )}
             <div className="flex justify-center">
               <Button.Primary onClick={handleSaveResponse}>
