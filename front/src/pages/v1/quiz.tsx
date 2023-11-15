@@ -1,13 +1,13 @@
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { SyncLoader } from 'react-spinners';
+import { Button } from '../../components/Button';
 import { classNames } from '../../components/utils';
 import { useQuiz } from '../../hooks/quiz/useQuiz';
 
 export const QuizDetails = () => {
-  // TODO: implement this page
-  // get id from router
-
   const { quizId } = useParams();
+
+  const navigate = useNavigate();
 
   const { data, isLoading } = useQuiz(quizId || '');
 
@@ -25,10 +25,17 @@ export const QuizDetails = () => {
       </main>
     );
 
+  const handlePreview = () => {
+    navigate('/v1/quiz/' + quizId + '/preview');
+  };
+
   return (
     <main>
       <div className="flex justify-center">
         <h2>{data.name}</h2>
+      </div>
+      <div>
+        <Button.Primary onClick={handlePreview}>Preview</Button.Primary>
       </div>
       <h2>Questões:</h2>
       <div className="flex flex-wrap gap-4">

@@ -60,9 +60,10 @@ type FormValues = z.infer<typeof formSchema>;
 
 interface StepsProps {
   quiz: QuizResponse;
+  preview: boolean;
 }
 
-export const Steps: React.FC<StepsProps> = ({ quiz }) => {
+export const Steps: React.FC<StepsProps> = ({ quiz, preview }) => {
   const [step, setStep] = useState(0);
   const [questionIndex, setQuestionIndex] = useState(0);
 
@@ -92,14 +93,18 @@ export const Steps: React.FC<StepsProps> = ({ quiz }) => {
     },
   });
 
+  const finishResponse = () => {
+    setStep(2);
+    setTimeout(() => {
+      reset();
+      setStep(0);
+      setQuestionIndex(0);
+    }, 5 * 1000);
+  };
+
   const mutation = useCreateResponse({
     onSuccess: () => {
-      setStep(2);
-      setTimeout(() => {
-        reset();
-        setStep(0);
-        setQuestionIndex(0);
-      }, 5 * 1000);
+      finishResponse();
     },
     onError: () => {
       toast.error('Error ao salvar as respostas. Tente novamente!');
@@ -107,6 +112,11 @@ export const Steps: React.FC<StepsProps> = ({ quiz }) => {
   });
 
   const onSubmit = ({ userData, ...rest }: FormValues) => {
+    if (preview) {
+      finishResponse();
+      return;
+    }
+
     mutation.mutate({
       userData: {
         ...userData,

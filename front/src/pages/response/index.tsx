@@ -4,7 +4,11 @@ import { toast } from 'react-toastify';
 import { useQuiz } from '../../hooks/quiz/useQuiz';
 import { Steps } from './components/Steps';
 
-export const Response = () => {
+interface ResponseProps {
+  preview?: boolean;
+}
+
+export const Response: React.FC<ResponseProps> = ({ preview = false }) => {
   const navigate = useNavigate();
   const { quizId } = useParams();
 
@@ -33,5 +37,5 @@ export const Response = () => {
     return null; // only to be accepted as a route
   }
 
-  return <Steps quiz={data} />;
+  return <Steps quiz={data} preview={preview} />;
 };
