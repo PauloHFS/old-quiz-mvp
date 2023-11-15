@@ -1,4 +1,5 @@
-import { useMutation } from '@tanstack/react-query';
+import { UseMutationOptions, useMutation } from '@tanstack/react-query';
+import { AxiosError } from 'axios';
 import * as z from 'zod';
 import { apiClient } from '../../services/api';
 
@@ -17,11 +18,14 @@ export const responseSchema = z.object({
   ),
 });
 
-export type Response = z.infer<typeof responseSchema>;
+export type ResponseData = z.infer<typeof responseSchema>;
 
-export const useCreateResponse = () => {
+export const useCreateResponse = (
+  options?: UseMutationOptions<ResponseData, AxiosError, ResponseData>
+) => {
   return useMutation({
-    mutationFn: ({ quizId, ...response }: Response) =>
+    mutationFn: ({ quizId, ...response }) =>
       apiClient.post('/quiz/' + quizId + '/response', response),
+    ...options,
   });
 };

@@ -2,9 +2,11 @@ import { RadioGroup } from '@headlessui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { toast } from 'react-toastify';
 import { z } from 'zod';
 import { Button } from '../../../components/Button';
 import { classNames } from '../../../components/utils';
+import { useCreateResponse } from '../../../hooks/quiz/useCreateResponse';
 import { QuizResponse } from '../../../hooks/quiz/useQuiz';
 import { BrasilDictionary } from '../../../services/brasil';
 
@@ -90,14 +92,28 @@ export const Steps: React.FC<StepsProps> = ({ quiz }) => {
     },
   });
 
-  const onSubmit = (data: FormValues) => {
-    console.log(data);
-    setStep(2);
-    setTimeout(() => {
-      reset();
-      setStep(0);
-      setQuestionIndex(0);
-    }, 5 * 1000);
+  const mutation = useCreateResponse({
+    onSuccess: () => {
+      setStep(2);
+      setTimeout(() => {
+        reset();
+        setStep(0);
+        setQuestionIndex(0);
+      }, 5 * 1000);
+    },
+    onError: () => {
+      toast.error('Error ao salvar as respostas. Tente novamente!');
+    },
+  });
+
+  const onSubmit = ({ userData, ...rest }: FormValues) => {
+    mutation.mutate({
+      userData: {
+        ...userData,
+        geolocation: `${userData.city}-${userData.state}`,
+      },
+      ...rest,
+    });
   };
 
   const prepareResponse = (index: number) => {
