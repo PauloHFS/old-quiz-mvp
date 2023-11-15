@@ -42,7 +42,7 @@ apiClient.interceptors.response.use(
     if (!refreshToken) {
       localStorage.removeItem('accessToken');
       localStorage.removeItem('refreshToken');
-      redirect('/login');
+      redirect('/auth');
     }
 
     refreshing = true;

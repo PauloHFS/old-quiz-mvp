@@ -30,6 +30,7 @@ export const router = createBrowserRouter([
       {
         path: 'auth',
         children: authRoutes,
+        // TODO refactor this to move verify and logout to inside authRoutes
         loader: async () => {
           if (hasSession()) return redirect('/v1');
           return null;

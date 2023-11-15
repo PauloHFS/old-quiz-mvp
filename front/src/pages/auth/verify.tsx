@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { SyncLoader } from 'react-spinners';
 import { toast } from 'react-toastify';
@@ -15,18 +16,24 @@ export const Verify: React.FC = () => {
           position: 'bottom-center',
         }
       );
-      navigate('/login');
+      navigate('/auth');
     },
   });
 
   const token = searchParams.get('token');
 
-  if (token === null || token === '') {
+  const isTokenInvalid = token === null || token === '';
+
+  useEffect(() => {
+    if (!isTokenInvalid) {
+      mutation.mutate({ token });
+    }
+  }, [token]);
+
+  if (isTokenInvalid) {
     navigate('/');
     return null;
   }
-
-  mutation.mutate({ token });
 
   return (
     <main className="h-screen flex flex-1 justify-center items-center">
