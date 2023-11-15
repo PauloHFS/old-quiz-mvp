@@ -3,8 +3,14 @@ import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import { env } from '../../config/env';
 import { prismaClient } from '../../database/index';
+import { resend } from '../../services/resend';
 import { JwtData } from '../../types';
-import { loginSchema, refreshTokenSchema, signupSchema } from './validations';
+import {
+  loginSchema,
+  refreshTokenSchema,
+  signupSchema,
+  verifyTokenSchema,
+} from './validations';
 
 export const login = async (req: Request, res: Response) => {
   try {
@@ -19,6 +25,7 @@ export const login = async (req: Request, res: Response) => {
         name: true,
         email: true,
         password: true,
+        verified: true,
       },
     });
 
@@ -91,7 +98,24 @@ export const signup = async (req: Request, res: Response) => {
         name: true,
         email: true,
         password: false,
+        verified: true,
       },
+    });
+
+    const accessToken = jwt.sign(user, env.JWT_SECRET, {
+      expiresIn: '24h',
+    });
+
+    resend.emails.send({
+      from: 'quiz-mvp@resend.dev',
+      to: user.email,
+      subject: 'Bem-vindo ao Quiz MVP',
+      text: `Olá ${user.name}, seja bem-vindo ao Quiz MVP!
+
+      Acesse o link abaixo para confirmar seu cadastro (expira em 24h):
+      
+      http://localhost:5173/auth/verify/${accessToken}
+      `,
     });
 
     return res.status(201).json(user);
@@ -114,24 +138,48 @@ export const refreshToken = async (req: Request, res: Response) => {
       return res.status(403).json({ message: 'Refresh Token inválido' });
     }
 
-    const { id, name, email } = jwt.verify(
-      body.refreshToken,
+    const tokenData = jwt.verify(body.refreshToken, env.JWT_SECRET) as JwtData;
+
+    const accessToken = jwt.sign(tokenData, env.JWT_SECRET, {
+      expiresIn: '15m',
+    });
+
+    return res.json({ accessToken });
+  } catch (error) {
+    return res.status(400).json(error);
+  }
+};
+
+export const verifyToken = async (req: Request, res: Response) => {
+  try {
+    const { params } = verifyTokenSchema.parse(req);
+
+    const { id, name, email, verified } = jwt.verify(
+      params.token,
       env.JWT_SECRET
     ) as JwtData;
 
-    const accessToken = jwt.sign(
-      {
+    if (verified) {
+      return res.status(400).json({ message: 'Token já verificado' });
+    }
+
+    const user = await prismaClient.user.update({
+      where: {
         id,
         name,
         email,
+        verified: false,
       },
-      env.JWT_SECRET,
-      {
-        expiresIn: '15m',
-      }
-    );
+      data: {
+        verified: true,
+      },
+    });
 
-    return res.json({ accessToken });
+    if (!user) {
+      return res.status(404).json({ message: 'Usuário não encontrado' });
+    }
+
+    return res.json(user);
   } catch (error) {
     return res.status(400).json(error);
   }

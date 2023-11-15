@@ -5,6 +5,7 @@ export const userPayloadSchema = z.object({
   id: z.number(),
   name: z.string(),
   email: z.string(),
+  verified: z.boolean(),
 });
 
 export interface JwtData

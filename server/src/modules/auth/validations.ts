@@ -22,7 +22,7 @@ export const signupSchema = z.object({
       .string()
       .min(2, 'nome precisa ter no mínimo 2 caracteres')
       .max(100, 'nome precisa ter no máximo 100 caracteres'),
-    email: z.string().email('Email - Inválido'),
+    email: z.string().email('Email - Inválido'), //TODO - verificar se o email já existe
     password: z
       .string()
       .min(6, 'password precisa ter no mínimo 6 caracteres')
@@ -33,5 +33,11 @@ export const signupSchema = z.object({
 export const refreshTokenSchema = z.object({
   body: z.object({
     refreshToken: z.string(),
+  }),
+});
+
+export const verifyTokenSchema = z.object({
+  params: z.object({
+    token: z.string(),
   }),
 });
