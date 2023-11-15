@@ -33,7 +33,7 @@ AuthRouter.post(
   refreshToken
 );
 AuthRouter.post(
-  '/verify-token/:token',
+  '/verify-token',
   rateLimit({ windowMs: 24 * 60 * 60 * 1000, max: 1 }), // 1 request por dia
   validateZodSchema(verifyTokenSchema),
   verifyToken

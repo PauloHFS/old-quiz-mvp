@@ -102,21 +102,19 @@ export const signup = async (req: Request, res: Response) => {
       },
     });
 
-    const accessToken = jwt.sign(user, env.JWT_SECRET, {
-      expiresIn: '24h',
-    });
+    // TODO melhorar esse fluxo, adicionar tempo de expiração no token
+    const accessToken = jwt.sign(user, env.JWT_SECRET);
 
-    resend.emails.send({
-      from: 'quiz-mvp@resend.dev',
-      to: user.email,
-      subject: 'Bem-vindo ao Quiz MVP',
-      text: `Olá ${user.name}, seja bem-vindo ao Quiz MVP!
-
-      Acesse o link abaixo para confirmar seu cadastro (expira em 24h):
-      
-      http://localhost:5173/auth/verify/${accessToken}
-      `,
-    });
+    if (env.NODE_ENV === 'development') {
+      console.log(`http://localhost:5173/auth/verify?token=${accessToken}`);
+    } else {
+      resend.emails.send({
+        from: 'Quiz MVP <quiz-mvp@resend.dev>',
+        to: user.email,
+        subject: 'Bem-vindo ao Quiz MVP',
+        text: `Olá ${user.name}, seja bem-vindo ao Quiz MVP!\n\nAcesse o link abaixo para confirmar seu cadastro:\n\nhttp://localhost:5173/auth/verify?token=${accessToken}`,
+      });
+    }
 
     return res.status(201).json(user);
   } catch (error) {
@@ -152,10 +150,10 @@ export const refreshToken = async (req: Request, res: Response) => {
 
 export const verifyToken = async (req: Request, res: Response) => {
   try {
-    const { params } = verifyTokenSchema.parse(req);
+    const { body } = verifyTokenSchema.parse(req);
 
     const { id, name, email, verified } = jwt.verify(
-      params.token,
+      body.token,
       env.JWT_SECRET
     ) as JwtData;
 

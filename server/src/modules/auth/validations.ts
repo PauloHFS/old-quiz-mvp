@@ -37,7 +37,7 @@ export const refreshTokenSchema = z.object({
 });
 
 export const verifyTokenSchema = z.object({
-  params: z.object({
+  body: z.object({
     token: z.string(),
   }),
 });

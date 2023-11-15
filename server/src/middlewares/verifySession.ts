@@ -16,7 +16,7 @@ export const verifySession = async (
       return res.status(401).send();
     }
 
-    const { id, email, name } = jwt.verify(
+    const { id, name, email, verified } = jwt.verify(
       accessToken,
       env.JWT_SECRET
     ) as JwtData;
@@ -24,13 +24,15 @@ export const verifySession = async (
     const user = await prismaClient.user.findUnique({
       where: {
         id,
-        email,
         name,
+        email,
+        verified,
       },
       select: {
         id: true,
         name: true,
         email: true,
+        verified: true,
       },
     });
 
