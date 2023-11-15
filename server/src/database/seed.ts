@@ -11,6 +11,7 @@ async function main() {
       email: 'paulohernane10@gmail.com',
       name: 'Paulo Hernane',
       password: hashedPassword,
+      verified: true,
       Quiz: {
         create: [
           {
