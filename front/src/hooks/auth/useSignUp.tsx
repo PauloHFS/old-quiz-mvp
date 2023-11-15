@@ -17,11 +17,20 @@ export const signUpSchema = z.object({
 
 type SignUpParams = z.infer<typeof signUpSchema>;
 
+type SignUpResponse = {
+  email: string;
+  id: number;
+  name: string;
+  verified: boolean;
+};
+
 export const useSignUp = (
-  options?: UseMutationOptions<SignUpParams, AxiosError>
+  options?: UseMutationOptions<SignUpResponse, AxiosError, SignUpParams>
 ) =>
   useMutation({
     mutationFn: data =>
-      apiClient.post<SignUpParams>('/auth/signup', data).then(res => res.data),
+      apiClient
+        .post<SignUpResponse>('/auth/signup', data)
+        .then(res => res.data),
     ...options,
   });

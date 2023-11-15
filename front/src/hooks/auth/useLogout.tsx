@@ -13,5 +13,6 @@ export const useLogout = (options?: UseMutationOptions) =>
       localStorage.removeItem('accessToken');
       localStorage.removeItem('refreshToken');
     },
+    retry: false,
     ...options,
   });

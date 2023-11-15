@@ -1,9 +1,10 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
+import { toast } from 'react-toastify';
 import * as z from 'zod';
 import { Button } from '../../components/Button';
 import { classNames } from '../../components/utils';
-import { signUpSchema } from '../../hooks/auth/useSignUp';
+import { signUpSchema, useSignUp } from '../../hooks/auth/useSignUp';
 
 const signUpFormSchema = signUpSchema
   .extend({
@@ -17,6 +18,8 @@ const signUpFormSchema = signUpSchema
 type SignUpFormParams = z.infer<typeof signUpFormSchema>;
 
 export const SignUp = () => {
+  // const navigate = useNavigate();
+
   const {
     register,
     handleSubmit,
@@ -25,9 +28,39 @@ export const SignUp = () => {
     resolver: zodResolver(signUpFormSchema),
   });
 
-  const onSubmit: Parameters<typeof handleSubmit>[0] = data => {
-    console.log(data);
+  const mutation = useSignUp({
+    onError: () => {
+      toast.error('Erro ao cadastrar conta! Tente novamente.');
+    },
+  });
+
+  const onSubmit: Parameters<typeof handleSubmit>[0] = ({
+    email,
+    nome,
+    password,
+  }) => {
+    mutation.mutate({
+      email,
+      nome,
+      password,
+    });
   };
+
+  if (mutation.isSuccess) {
+    return (
+      <main className="h-screen p-4 bg-green-200 flex items-center justify-center">
+        <div className="h-72 rounded-xl p-4 bg-white flex flex-1 flex-col justify-center md:max-w-3xl">
+          <h2 className="text-3xl text-center">
+            Cadastro realizado com sucesso!
+          </h2>
+          <p className="text-xl text-center">
+            Verifique sua caixa de entrada do seu e-mail para liberar seu
+            acesso!
+          </p>
+        </div>
+      </main>
+    );
+  }
 
   return (
     <main className="h-screen p-4 bg-green-200 md:flex items-center justify-center">
@@ -73,7 +106,9 @@ export const SignUp = () => {
             <span>{errors.passwordConfirmation.message}</span>
           )}
         </div>
-        <Button.Primary type="submit">Cadastrar</Button.Primary>
+        <Button.Primary type="submit" disabled={mutation.isPending}>
+          {mutation.isPending ? 'Carregando...' : 'Cadastrar'}
+        </Button.Primary>
       </form>
     </main>
   );
