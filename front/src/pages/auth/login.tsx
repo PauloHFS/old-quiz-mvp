@@ -62,18 +62,25 @@ export const Login = () => {
   return (
     <main className="bg-green-300 h-screen flex justify-center items-center">
       <div className="bg-white p-8 h-fit">
-        <h2>Login</h2>
-        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col">
+        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-2">
           <Input.Container>
-            <Input.Label htmlFor="email">Email</Input.Label>
-            <Input.Component type="email" {...register('email')} />
+            <Input.Label htmlFor="email">E-mail</Input.Label>
+            <Input.Component
+              type="email"
+              {...register('email')}
+              placeholder="jose.silva@email.com"
+            />
             <Input.Error hasError={!!errors.email}>
               {errors.email?.message}
             </Input.Error>
           </Input.Container>
           <Input.Container>
-            <Input.Label htmlFor="password">Password</Input.Label>
-            <Input.Component type="password" {...register('password')} />
+            <Input.Label htmlFor="password">Senha</Input.Label>
+            <Input.Component
+              type="password"
+              {...register('password')}
+              placeholder="********"
+            />
             <Input.Error hasError={!!errors.password}>
               {errors.password?.message}
             </Input.Error>
@@ -81,7 +88,7 @@ export const Login = () => {
           <Input.Container>
             <Input.Label htmlFor="remember" className="flex gap-1">
               <Input.Component type="checkbox" {...register('remember')} />
-              Remember me
+              Lembrar e-mail
             </Input.Label>
           </Input.Container>
           <Button.Primary type="submit">Login</Button.Primary>
