@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { forwardRef } from 'react';
 import { classNames } from './utils';
 
 interface InputContainerProps
@@ -37,24 +37,23 @@ interface InputComponentProps
   hasError?: boolean;
 }
 
-const Component: React.FC<InputComponentProps> = ({
-  hasError = false,
-  className,
-  ...props
-}) => {
-  return (
-    <input
-      className={classNames(
-        'rounded-md py-1 px-2 border',
-        {
-          'border-2 border-red-600': hasError,
-        },
-        className
-      )}
-      {...props}
-    />
-  );
-};
+const Component = forwardRef<HTMLInputElement, InputComponentProps>(
+  ({ hasError = false, className, ...props }, ref) => {
+    return (
+      <input
+        ref={ref}
+        className={classNames(
+          'rounded-md py-1 px-2 border',
+          {
+            'border-2 border-red-600': hasError,
+          },
+          className
+        )}
+        {...props}
+      />
+    );
+  }
+);
 
 interface InputErrorProps
   extends React.DetailedHTMLProps<
