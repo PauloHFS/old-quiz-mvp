@@ -48,11 +48,9 @@ export const Dashboard: React.FC = () => {
         </tbody>
       </table>
       <div className="flex justify-center items-baseline gap-8">
-        <Button.Primary onClick={() => fetchPreviousPage()}>
-          {'<'}
-        </Button.Primary>
+        <Button onClick={() => fetchPreviousPage()}>{'<'}</Button>
         <p>{data?.pageParams}</p>
-        <Button.Primary onClick={() => fetchNextPage()}>{'>'}</Button.Primary>
+        <Button onClick={() => fetchNextPage()}>{'>'}</Button>
       </div>
     </main>
   );

@@ -93,7 +93,7 @@ export const Login = () => {
             Lembrar e-mail
           </Input.Label>
         </Input.Container>
-        <Button.Primary type="submit">Login</Button.Primary>
+        <Button type="submit">Login</Button>
       </form>
     </main>
   );

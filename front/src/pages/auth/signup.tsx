@@ -106,9 +106,9 @@ export const SignUp = () => {
             <span>{errors.passwordConfirmation.message}</span>
           )}
         </div>
-        <Button.Primary type="submit" disabled={mutation.isPending}>
+        <Button type="submit" disabled={mutation.isPending}>
           {mutation.isPending ? 'Carregando...' : 'Cadastrar'}
-        </Button.Primary>
+        </Button>
       </form>
     </main>
   );
