@@ -6,18 +6,15 @@ import { useQuizzes } from '../../hooks/quiz/useQuizzes';
 
 export const Dashboard: React.FC = () => {
   const navigate = useNavigate();
-  const { data } = useQuizzes();
-
-  const onCreateNewQuizPress = () => navigate('/v1/new-quiz');
+  const { data, fetchNextPage, fetchPreviousPage } = useQuizzes();
 
   const onQuizCardClick = (id: number) => () => navigate(`/v1/quiz/${id}`);
 
   // TODO Create a componente to do a infinite scroll
   return (
-    <main>
-      <Button.Primary onClick={onCreateNewQuizPress}>Criar Quiz</Button.Primary>
-      <table>
-        <thead>
+    <main className="flex flex-col gap-4">
+      <table className="w-full">
+        <thead className="border-gray-500 border-2">
           <tr>
             <th>#</th>
             <th>Nome</th>
@@ -31,12 +28,12 @@ export const Dashboard: React.FC = () => {
           {data?.pages.map(page =>
             page.data.map(quiz => (
               <tr key={quiz.id}>
-                <td>{quiz.id}</td>
-                <td>{quiz.name}</td>
-                <td>
+                <td className="text-center">{quiz.id}</td>
+                <td className="text-center">{quiz.name}</td>
+                <td className="text-center">
                   <PassTime time={quiz.createdAt} />
                 </td>
-                <td>
+                <td className="text-center">
                   <PassTime time={quiz.updatedAt} />
                 </td>
                 <td onClick={onQuizCardClick(quiz.id)}>
@@ -50,6 +47,13 @@ export const Dashboard: React.FC = () => {
           )}
         </tbody>
       </table>
+      <div className="flex justify-center items-baseline gap-8">
+        <Button.Primary onClick={() => fetchPreviousPage()}>
+          {'<'}
+        </Button.Primary>
+        <p>{data?.pageParams}</p>
+        <Button.Primary onClick={() => fetchNextPage()}>{'>'}</Button.Primary>
+      </div>
     </main>
   );
 };
