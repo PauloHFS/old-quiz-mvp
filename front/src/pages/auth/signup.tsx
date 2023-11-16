@@ -63,10 +63,10 @@ export const SignUp = () => {
   }
 
   return (
-    <main className="h-screen p-4 bg-green-200 md:flex items-center justify-center">
+    <main className="h-screen p-4 md:flex items-center justify-center bg-green-300">
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="rounded-xl p-4 bg-white flex flex-1 flex-col gap-4 md:max-w-3xl"
+        className="md:max-w-3xl p-4 flex flex-1 flex-col gap-4 rounded-xl bg-white"
       >
         <div className="flex flex-col gap-1">
           <label htmlFor="nome">Nome:</label>

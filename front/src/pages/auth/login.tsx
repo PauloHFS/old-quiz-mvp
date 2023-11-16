@@ -60,10 +60,10 @@ export const Login = () => {
   };
 
   return (
-    <main className="bg-green-300 h-screen flex justify-center items-center">
+    <main className="h-screen p-4 md:flex justify-center items-center bg-green-300">
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="h-fit md:min-w-[600px] lg:min-w-[900px] p-8 flex flex-col gap-2 bg-white"
+        className="h-fit md:min-w-[600px] lg:min-w-[900px] p-4 flex flex-col gap-4 rounded-xl bg-white"
       >
         <Input.Container>
           <Input.Label htmlFor="email">E-mail</Input.Label>
