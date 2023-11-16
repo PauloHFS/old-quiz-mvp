@@ -2,6 +2,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import zod from 'zod';
+import { Button } from '../../components/Button';
+import { Input } from '../../components/Input';
 import { useLogin } from '../../hooks/auth/useLogin';
 
 const schema = zod.object({
@@ -62,21 +64,27 @@ export const Login = () => {
       <div className="bg-white p-8 h-fit">
         <h2>Login</h2>
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col">
-          <label htmlFor="email">
-            Email
-            <input type="email" {...register('email')} />
-            {errors.email && <span>{errors.email.message}</span>}
-          </label>
-          <label htmlFor="password">
-            Password
-            <input type="password" {...register('password')} />
-            {errors.password && <span>{errors.password.message}</span>}
-          </label>
-          <label htmlFor="remember">
-            <input type="checkbox" {...register('remember')} />
-            Remember me
-          </label>
-          <button type="submit">Login</button>
+          <Input.Container>
+            <Input.Label htmlFor="email">Email</Input.Label>
+            <Input.Component type="email" {...register('email')} />
+            <Input.Error hasError={!!errors.email}>
+              {errors.email?.message}
+            </Input.Error>
+          </Input.Container>
+          <Input.Container>
+            <Input.Label htmlFor="password">Password</Input.Label>
+            <Input.Component type="password" {...register('password')} />
+            <Input.Error hasError={!!errors.password}>
+              {errors.password?.message}
+            </Input.Error>
+          </Input.Container>
+          <Input.Container>
+            <Input.Label htmlFor="remember" className="flex gap-1">
+              <Input.Component type="checkbox" {...register('remember')} />
+              Remember me
+            </Input.Label>
+          </Input.Container>
+          <Button.Primary type="submit">Login</Button.Primary>
         </form>
       </div>
     </main>
