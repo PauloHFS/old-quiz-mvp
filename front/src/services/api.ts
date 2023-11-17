@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { redirect } from 'react-router-dom';
 
 import { env } from '../config/env';
 
@@ -27,25 +26,20 @@ apiClient.interceptors.request.use(
   }
 );
 
-let refreshing = false;
-
 apiClient.interceptors.response.use(
   response => {
     return response;
   },
   error => {
     if (error.response.status !== 401) return error;
-    if (refreshing) return error;
 
     const refreshToken = localStorage.getItem('refreshToken');
 
     if (!refreshToken) {
       localStorage.removeItem('accessToken');
-      localStorage.removeItem('refreshToken');
-      redirect('/auth');
+      return error;
     }
 
-    refreshing = true;
     apiClient
       .post('/auth/refresh-token', {
         refreshToken,
@@ -53,15 +47,12 @@ apiClient.interceptors.response.use(
       .then(res => {
         localStorage.setItem('accessToken', res.data.accessToken);
       })
-      .catch(() => {
+      .catch(error => {
+        console.error(error);
         localStorage.removeItem('accessToken');
         localStorage.removeItem('refreshToken');
-        redirect('/auth');
-      })
-      .finally(() => {
-        refreshing = false;
       });
 
-    return Promise.reject(error);
+    return error;
   }
 );

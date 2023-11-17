@@ -1,7 +1,9 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
+import { TbTrash } from 'react-icons/tb';
 import { z } from 'zod';
 import { Button } from '../../components/Button';
+import { Input } from '../../components/Input';
 import { useCreateQuiz } from '../../hooks/quiz/useCreateQuiz';
 
 const schema = z.object({
@@ -65,7 +67,7 @@ export const NewQuiz = () => {
 
   const addQuestion = () => {
     setQuestions(prev => [...prev, defaultQuestion]);
-    // trigger('questions');
+    // trigger('questoes');
   };
 
   const removeQuestion = (questionIndex: number) => {
@@ -73,7 +75,7 @@ export const NewQuiz = () => {
       ...prev.slice(0, questionIndex),
       ...prev.slice(questionIndex + 1),
     ]);
-    trigger('questoes');
+    // trigger('questoes');
   };
 
   const addAlternative = (questionIndex: number) => {
@@ -89,7 +91,7 @@ export const NewQuiz = () => {
         ...prev.slice(questionIndex + 1),
       ];
     });
-    trigger(`questoes.${questionIndex}.alternativas`);
+    // trigger(`questoes.${questionIndex}.alternativas`);
   };
 
   const removeAlternative = (
@@ -111,7 +113,7 @@ export const NewQuiz = () => {
         ...prev.slice(questionIndex + 1),
       ];
     });
-    trigger(`questoes.${questionIndex}.alternativas`);
+    // trigger(`questoes.${questionIndex}.alternativas`);
   };
 
   const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -166,105 +168,117 @@ export const NewQuiz = () => {
   };
 
   return (
-    <main>
-      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col">
-        <label htmlFor="name" className="flex flex-col">
-          1. Adicione o nome do seu quiz:
-          <input
-            {...register('nome')}
+    <main className="p-4">
+      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
+        <Input.Container>
+          <Input.Label>1. Adicione o nome do seu quiz:</Input.Label>
+          <Input.Component
+            type="text"
             placeholder="Pesquisa do Evento X"
-            className="border-2 border-gray-300"
+            {...register('nome')}
           />
-          {errors.nome && <span>{errors.nome.message}</span>}
-        </label>
-        <div>
-          <h2>2. Adicione questões da sua pesquisa:</h2>
-          {errors.questoes && <span>{errors.questoes.message}</span>}
+          <Input.Error hasError={!!errors.nome}>
+            {errors.nome?.message}
+          </Input.Error>
+        </Input.Container>
+        <div className="flex items-baseline gap-8">
+          <div>
+            <h2>2. Adicione questões da sua pesquisa:</h2>
+            <Input.Error hasError={!!errors.questoes}>
+              {errors.questoes?.message}
+            </Input.Error>
+          </div>
+          <Button variant="secondary" onClick={addQuestion}>
+            Criar Questão
+          </Button>
         </div>
-        {questions.map((question, questionIndex) => (
-          <div key={questionIndex}>
-            <div className="flex gap-2">
-              <h3>{`${questionIndex + 1}. `}</h3>
-              <div className="flex flex-col">
-                <input
-                  type="text"
-                  name={`questoes.${questionIndex}.titulo`}
-                  placeholder="Você gostou do evento?"
-                  className="border-b-2 border-gray-300"
-                  value={question.titulo}
-                  onChange={handleFormChange}
-                />
-                {errors.questoes?.[questionIndex]?.titulo && (
-                  <span>
+        <div className="w-full flex flex-wrap gap-8 justify-center ">
+          {questions.map((question, questionIndex) => (
+            <div
+              key={questionIndex}
+              className="flex flex-col h-fit gap-2 p-4 border border-gray-600 rounded-lg"
+            >
+              <div className="flex justify-between">
+                <Input.Container>
+                  <Input.Label>
+                    {`${questionIndex + 1}. `}
+                    <Input.Component
+                      type="text"
+                      name={`questoes.${questionIndex}.titulo`}
+                      placeholder="Você gostou do evento?"
+                      value={question.titulo}
+                      onChange={handleFormChange}
+                    />
+                  </Input.Label>
+                  <Input.Error
+                    hasError={!!errors.questoes?.[questionIndex]?.titulo}
+                  >
                     {errors.questoes?.[questionIndex]?.titulo?.message}
-                  </span>
-                )}
+                  </Input.Error>
+                </Input.Container>
+                <div>
+                  <Button
+                    variant="outline"
+                    onClick={() => removeQuestion(questionIndex)}
+                  >
+                    <TbTrash />
+                  </Button>
+                </div>
               </div>
-              <div>
-                <Button.Primary onClick={() => removeQuestion(questionIndex)}>
-                  -
-                </Button.Primary>
-              </div>
-            </div>
-            <div>
               {question.alternativas.map((alternative, alternativeIndex) => (
-                <div
-                  key={questionIndex + '.' + alternativeIndex}
-                  className="flex gap-2"
-                >
-                  <h4>
+                <Input.Container key={questionIndex + '.' + alternativeIndex}>
+                  <Input.Label className="flex flex-wrap gap-2">
                     {questionIndex + 1}.{alternativeIndex + 1}.{' '}
-                  </h4>
-                  <div className="flex flex-col">
-                    <input
+                    <Input.Component
                       type="text"
                       placeholder={`Sim, não, talvez...`}
-                      className="rounded-md border-b-2 border-gray-300"
                       name={`questoes.${questionIndex}.alternativas.${alternativeIndex}`}
                       value={alternative}
                       onChange={handleFormChange}
                     />
-                    {errors.questoes?.[questionIndex]?.alternativas?.[
-                      alternativeIndex
-                    ] && (
-                      <span>
-                        {
-                          errors.questoes?.[questionIndex]?.alternativas?.[
-                            alternativeIndex
-                          ]?.message
-                        }
-                      </span>
-                    )}
-                  </div>
-                  <input
-                    type="radio"
-                    name={`questoes.${questionIndex}.alternativas.${alternativeIndex}.correctIndex`}
-                    checked={alternativeIndex === question.correctIndex}
-                    onChange={handleFormChange}
-                  />
-                  <div>
-                    <Button.Primary
+                    <input
+                      type="radio"
+                      name={`questoes.${questionIndex}.alternativas.${alternativeIndex}.correctIndex`}
+                      checked={alternativeIndex === question.correctIndex}
+                      onChange={handleFormChange}
+                    />
+                    <Button
+                      variant="outline"
                       onClick={() =>
                         removeAlternative(questionIndex, alternativeIndex)
                       }
                     >
-                      -
-                    </Button.Primary>
-                  </div>
-                </div>
+                      <TbTrash />
+                    </Button>
+                  </Input.Label>
+                  <Input.Error
+                    hasError={
+                      !!errors.questoes?.[questionIndex]?.alternativas?.[
+                        alternativeIndex
+                      ]
+                    }
+                  >
+                    {
+                      errors.questoes?.[questionIndex]?.alternativas?.[
+                        alternativeIndex
+                      ]?.message
+                    }
+                  </Input.Error>
+                </Input.Container>
               ))}
+              <div className="flex justify-center">
+                <Button
+                  variant="secondary"
+                  onClick={() => addAlternative(questionIndex)}
+                >
+                  Adicionar Alternativa
+                </Button>
+              </div>
             </div>
-            <Button.Primary onClick={() => addAlternative(questionIndex)}>
-              Adicionar Alternativa
-            </Button.Primary>
-          </div>
-        ))}
-        <div>
-          <Button.Primary onClick={addQuestion}>Criar Questão</Button.Primary>
+          ))}
         </div>
-
         <div className="self-center">
-          <Button.Primary type="submit">Criar Quiz</Button.Primary>
+          <Button type="submit">Criar Quiz</Button>
         </div>
       </form>
     </main>
