@@ -136,11 +136,23 @@ export const refreshToken = async (req: Request, res: Response) => {
       return res.status(403).json({ message: 'Refresh Token inválido' });
     }
 
-    const tokenData = jwt.verify(body.refreshToken, env.JWT_SECRET) as JwtData;
+    const { id, name, email, verified } = jwt.verify(
+      body.refreshToken,
+      env.JWT_SECRET
+    ) as JwtData;
 
-    const accessToken = jwt.sign(tokenData, env.JWT_SECRET, {
-      expiresIn: '15m',
-    });
+    const accessToken = jwt.sign(
+      {
+        id,
+        name,
+        email,
+        verified,
+      },
+      env.JWT_SECRET,
+      {
+        expiresIn: '15m',
+      }
+    );
 
     return res.json({ accessToken });
   } catch (error) {
@@ -158,7 +170,7 @@ export const verifyToken = async (req: Request, res: Response) => {
     ) as JwtData;
 
     if (verified) {
-      return res.status(400).json({ message: 'Token já verificado' });
+      return res.status(400).json({ message: 'Usuário já verificado' });
     }
 
     const user = await prismaClient.user.update({

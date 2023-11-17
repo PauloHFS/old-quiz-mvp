@@ -1,6 +1,7 @@
 import { createBrowserRouter, redirect } from 'react-router-dom';
 import { authRoutes } from './auth';
 import { Logout } from './auth/logout';
+import { RootErrorBoundary } from './error';
 import { Home } from './home';
 import { Response } from './response';
 import { Root } from './root';
@@ -22,6 +23,7 @@ export const router = createBrowserRouter([
   {
     path: '/',
     element: <Root />,
+    errorElement: <RootErrorBoundary />,
     children: [
       {
         index: true,

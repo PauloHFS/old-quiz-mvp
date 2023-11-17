@@ -35,18 +35,22 @@ export const QuizDetails = () => {
         <h2>{data.name}</h2>
       </div>
       <div>
-        <Button.Primary onClick={handlePreview}>Preview</Button.Primary>
+        <Button onClick={handlePreview}>Preview</Button>
       </div>
       <h2>Questões:</h2>
       <div className="flex flex-wrap gap-4">
         {data.Question.map((question, questionIndex) => (
-          <div className="border-2 border-gray-300 rounded-md py-2 px-4">
+          <div
+            key={question.id}
+            className="border-2 border-gray-300 rounded-md py-2 px-4"
+          >
             <h3>
               {questionIndex + 1}. {question.title}
             </h3>
             <div>
               {question.alternatives.map((alternative, alternativeIndex) => (
                 <li
+                  key={alternative + alternativeIndex}
                   className={classNames({
                     'text-green-500':
                       alternativeIndex === question.correctIndex,
