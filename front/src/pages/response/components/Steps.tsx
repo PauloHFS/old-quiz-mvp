@@ -228,9 +228,7 @@ export const Steps: React.FC<StepsProps> = ({ quiz, preview }) => {
             </label>
 
             <div className="flex justify-center">
-              <Button.Primary onClick={handleSaveUserData}>
-                Próximo
-              </Button.Primary>
+              <Button onClick={handleSaveUserData}>Próximo</Button>
             </div>
           </div>
         )}
@@ -262,11 +260,11 @@ export const Steps: React.FC<StepsProps> = ({ quiz, preview }) => {
               </span>
             )}
             <div className="flex justify-center">
-              <Button.Primary onClick={handleSaveResponse}>
+              <Button onClick={handleSaveResponse}>
                 {questionIndex === quiz.Question.length - 1
                   ? 'Finalizar'
                   : 'Próximo'}
-              </Button.Primary>
+              </Button>
             </div>
           </div>
         )}
