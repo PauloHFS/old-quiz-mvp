@@ -16,6 +16,7 @@
     "seed": "ts-node ./src/database/seed.ts"
   },
   "devDependencies": {
+    "@faker-js/faker": "^8.3.1",
     "@tsconfig/node20": "^20.1.2",
     "@types/bcrypt": "^5.0.2",
     "@types/cors": "^2.8.16",
