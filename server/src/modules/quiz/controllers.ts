@@ -60,7 +60,7 @@ export const getQuizById = async (req: Request, res: Response) => {
         userId: user.id,
       },
       include: {
-        Question: true,
+        Questions: true,
       },
     });
 
@@ -83,7 +83,7 @@ export const createNewQuiz = async (req: Request, res: Response) => {
     const quiz = await prismaClient.quiz.create({
       data: {
         name: nome,
-        Question: {
+        Questions: {
           create: questoes.map(({ titulo, alternativas, correctIndex }) => ({
             title: titulo,
             alternatives: alternativas,
@@ -145,12 +145,22 @@ export const getQuizStats = async (req: Request, res: Response) => {
     // TODO Add validation
     const quizId = Number(req.params.id);
 
+    /*
+    Stats:
+    - total responses
+    - right answers
+    - wrong answers
+
+    - age
+    - gender
+    */
+
     const quiz = await prismaClient.quiz.findUnique({
       where: {
         id: quizId,
       },
       include: {
-        Question: true,
+        Questions: true,
       },
     });
 
@@ -158,9 +168,30 @@ export const getQuizStats = async (req: Request, res: Response) => {
       return res.status(404).json({ message: 'Quiz not found' });
     }
 
+    const responseUserInfos = await prismaClient.responseUserInfo.findMany({
+      where: {
+        quizId,
+      },
+      include: {
+        quiz: {
+          include: {
+            Questions: true,
+          },
+        },
+        Responses: true,
+      },
+    });
+
+    // 1. Get all responses
+    // 2. Get all questions
+    // 3. Get all correct answers
+    // 4. Compare responses with correct answers
+
     return res.json({
       quizId,
-      message: 'stats',
+      quiz,
+      responseUserInfo: responseUserInfos[0],
+      totalAnswers: responseUserInfos.length,
     });
   } catch (error) {
     return res.status(400).json(error);

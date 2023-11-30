@@ -43,7 +43,7 @@ const createNewQuiz = async ({
     data: {
       name: faker.lorem.words(2),
       userId: 1,
-      Question: {
+      Questions: {
         createMany: {
           data: Array.from({ length: question_count }).map(() => ({
             title: `${faker.lorem.words(5)}?`,
@@ -59,14 +59,14 @@ const createNewQuiz = async ({
       },
     },
     include: {
-      Question: true,
+      Questions: true,
     },
   });
 
   console.log(
     `[SEED] Created quiz ${quiz.name}, with ${
-      quiz.Question.length
-    } questions and ${quiz.Question.reduce(
+      quiz.Questions.length
+    } questions and ${quiz.Questions.reduce(
       (acc, curr) => acc + curr.alternatives.length,
       0
     )} alternatives in total`
@@ -84,7 +84,7 @@ const populateResponse = async ({ quizId }: { quizId: number }) => {
       id: quizId,
     },
     include: {
-      Question: true,
+      Questions: true,
     },
   });
 
@@ -128,7 +128,7 @@ const populateResponse = async ({ quizId }: { quizId: number }) => {
   });
 
   const responses = await prisma.response.createMany({
-    data: quiz.Question.flatMap(question =>
+    data: quiz.Questions.flatMap(question =>
       responseUserInfoIds.map(responseUserInfo => ({
         responseUserInfoId: responseUserInfo.id,
         questionId: question.id,
@@ -148,7 +148,10 @@ const populateResponse = async ({ quizId }: { quizId: number }) => {
 };
 
 const seed = async () => {
-  const user1 = await createNewUser({});
+  const user1 = await createNewUser({
+    email: 'paulohernane10@gmail.com',
+    name: 'Paulo Hernane',
+  });
   const quiz1 = await createNewQuiz({ userId: user1.id });
   await populateResponse({ quizId: quiz1.id });
 };

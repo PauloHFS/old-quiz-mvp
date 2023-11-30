@@ -22,8 +22,8 @@ model User {
   verified  Boolean   @default(false)
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
-  Session   Session[]
-  Quiz      Quiz[]
+  Sessions  Session[]
+  Quizzes   Quiz[]
 }
 
 model Session {
@@ -36,14 +36,14 @@ model Session {
 }
 
 model Quiz {
-  id               Int                @id @default(autoincrement())
-  userId           Int
-  user             User               @relation(fields: [userId], references: [id], onDelete: Cascade)
-  name             String
-  createdAt        DateTime           @default(now())
-  updatedAt        DateTime           @updatedAt
-  Question         Question[]
-  ResponseUserInfo ResponseUserInfo[]
+  id                Int                @id @default(autoincrement())
+  userId            Int
+  user              User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name              String
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  Questions         Question[]
+  ResponseUserInfos ResponseUserInfo[]
 }
 
 model Question {
@@ -55,7 +55,7 @@ model Question {
   correctIndex Int
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
-  Response     Response[]
+  Responses    Response[]
 }
 
 model Response {
@@ -77,5 +77,5 @@ model ResponseUserInfo {
   geolocation String // cidade-estado
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
-  Response    Response[]
+  Responses   Response[]
 }
