@@ -173,23 +173,45 @@ export const getQuizStats = async (req: Request, res: Response) => {
         quizId,
       },
       include: {
-        quiz: {
-          include: {
-            Questions: true,
-          },
-        },
         Responses: true,
       },
     });
 
-    // 1. Get all responses
-    // 2. Get all questions
-    // 3. Get all correct answers
-    // 4. Compare responses with correct answers
+    // Map<questionId, Map<alternative, count>>
+    // const questionAnswersCountMap = new Map<number, Map<string, number>>();
+
+    const questionIdToTitle = new Map<number, string>();
+    quiz.Questions.forEach(({ id, title }) => {
+      questionIdToTitle.set(id, title);
+    });
+
+    const questionAnswersCountMap: {
+      [questionTitle: string]: {
+        [alternative: string]: number;
+      };
+    } = {};
+
+    responseUserInfos.forEach(({ Responses }) => {
+      Responses.forEach(({ alternative, questionId }) => {
+        const questionTitle = questionIdToTitle.get(questionId);
+        if (!questionTitle) return;
+        const questionMap = questionAnswersCountMap[questionTitle];
+
+        if (questionMap) {
+          const count =
+            questionAnswersCountMap[questionTitle][alternative] || 0;
+          questionAnswersCountMap[questionTitle][alternative] = count + 1;
+        } else {
+          questionAnswersCountMap[questionTitle] = {
+            [alternative]: 1,
+          };
+        }
+      });
+    });
 
     return res.json({
-      quizId,
       quiz,
+      questionAnswersCountMap,
       responseUserInfo: responseUserInfos[0],
       totalAnswers: responseUserInfos.length,
     });

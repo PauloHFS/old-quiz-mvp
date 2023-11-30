@@ -1,0 +1,11 @@
+{
+  "configurations": [
+    {
+      "name": "Server: debug dev",
+      "type": "node-terminal",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/server",
+      "command": "yarn dev:debug"
+    }
+  ]
+}
