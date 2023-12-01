@@ -39,7 +39,7 @@ export const QuizDetails = () => {
       </div>
       <h2>Questões:</h2>
       <div className="flex flex-wrap gap-4">
-        {data.Question.map((question, questionIndex) => (
+        {data.Questions.map((question, questionIndex) => (
           <div
             key={question.id}
             className="border-2 border-gray-300 rounded-md py-2 px-4"

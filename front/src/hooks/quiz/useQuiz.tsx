@@ -7,7 +7,7 @@ export type QuizResponse = {
   name: string;
   createdAt: string;
   updatedAt: string;
-  Question: {
+  Questions: {
     id: number;
     quizId: number;
     title: string;

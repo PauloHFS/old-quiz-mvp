@@ -6,6 +6,13 @@
       "request": "launch",
       "cwd": "${workspaceFolder}/server",
       "command": "yarn dev:debug"
+    },
+    {
+      "name": "Front: debug dev",
+      "type": "firefox",
+      "request": "launch",
+      "url": "http://localhost:5173",
+      "webRoot": "${workspaceFolder}/front"
     }
   ]
 }
