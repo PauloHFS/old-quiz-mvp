@@ -1,6 +1,7 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import { SyncLoader } from 'react-spinners';
 import { Button } from '../../components/Button';
+import { QuizStats } from '../../components/QuizStats';
 import { classNames } from '../../components/utils';
 import { useQuiz } from '../../hooks/quiz/useQuiz';
 
@@ -63,6 +64,7 @@ export const QuizDetails = () => {
           </div>
         ))}
       </div>
+      <QuizStats quizId={quizId || ''} />
     </main>
   );
 };
