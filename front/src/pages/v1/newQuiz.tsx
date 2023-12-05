@@ -1,4 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { TbTrash } from 'react-icons/tb';
 import { z } from 'zod';
@@ -26,6 +27,8 @@ const schema = z.object({
 type NewQuizFormData = z.infer<typeof schema>;
 
 export const NewQuiz = () => {
+  const [image, setImage] = useState();
+
   const {
     register,
     handleSubmit,
@@ -181,6 +184,32 @@ export const NewQuiz = () => {
             {errors.nome?.message}
           </Input.Error>
         </Input.Container>
+        <div>
+          <label
+            htmlFor="alternativeImage"
+            className="border p-2 rounded-lg hover:bg-slate-200"
+          >
+            Adicionar imagem de fundo
+            <input
+              type="file"
+              name="alternativeImage"
+              id="alternativeImage"
+              accept=".png"
+              className="hidden"
+              onChange={e => {
+                const file = e.target.files?.[0];
+                if (file) {
+                  const reader = new FileReader();
+                  reader.onload = e => {
+                    setImage(e.target?.result as string);
+                  };
+                  reader.readAsDataURL(file);
+                }
+              }}
+            />
+          </label>
+          {image && <img src={image} />}
+        </div>
         <div className="flex items-baseline gap-8">
           <div>
             <h2>2. Adicione questões da sua pesquisa:</h2>

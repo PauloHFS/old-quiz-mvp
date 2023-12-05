@@ -1,0 +1,40 @@
+meta {
+  name: Create Response
+  type: http
+  seq: 10
+}
+
+post {
+  url: {{ _.base_url }}/quiz/2/response
+  body: json
+  auth: bearer
+}
+
+headers {
+  Content-Type: application/json
+  User-Agent: insomnia/8.3.0
+}
+
+auth:bearer {
+  token: {{access_token}}
+}
+
+body:json {
+  {
+  	"userData": {
+  		"gender": "male",
+  		"age": 23,
+  		"geolocation": "Imperatriz-Maranhão"
+  	},
+  	"responses": [
+  		{
+  			"questionId": 1,
+  			"alternativa": "Sim"
+  		},
+  		{
+  			"questionId": 2,
+  			"alternativa": "Sim"
+  		}
+  	]
+  }
+}

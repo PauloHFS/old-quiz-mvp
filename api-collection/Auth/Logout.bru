@@ -1,0 +1,26 @@
+meta {
+  name: Logout
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{ _.base_url }}/auth/logout
+  body: json
+  auth: bearer
+}
+
+headers {
+  Content-Type: application/json
+  User-Agent: insomnia/8.3.0
+}
+
+auth:bearer {
+  token: {{access_token}}
+}
+
+body:json {
+  {
+  	"refreshToken": "{{ _.refresh_token }}"
+  }
+}

@@ -1,0 +1,26 @@
+meta {
+  name: Refresh Token
+  type: http
+  seq: 8
+}
+
+post {
+  url: {{ _.base_url }}/auth/refresh-token
+  body: json
+  auth: bearer
+}
+
+headers {
+  Content-Type: application/json
+  User-Agent: insomnia/8.3.0
+}
+
+auth:bearer {
+  token:  {{access_token}}
+}
+
+body:json {
+  {
+  	"refreshToken": "{{ _.refresh_token }}"
+  }
+}

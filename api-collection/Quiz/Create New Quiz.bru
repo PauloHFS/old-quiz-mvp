@@ -1,0 +1,44 @@
+meta {
+  name: Create New Quiz
+  type: http
+  seq: 9
+}
+
+post {
+  url: {{ _.base_url }}/quiz
+  body: json
+  auth: bearer
+}
+
+headers {
+  Content-Type: application/json
+  User-Agent: insomnia/8.3.0
+}
+
+auth:bearer {
+  token: {{access_token}}
+}
+
+body:json {
+  {
+  	"nome": "Pesquisa de Testes 2",
+  	"questoes": [
+  		{
+  			"titulo": "Você gosta de Raça Negra?",
+  			"alternativas": [
+  				"Sim",
+  				"Não"
+  			],
+  			"correctIndex": 0
+  		},
+  		{
+  			"titulo": "Você gosta de Café?",
+  			"alternativas": [
+  				"Sim",
+  				"Não"
+  			],
+  			"correctIndex": 0
+  		}
+  	]
+  }
+}

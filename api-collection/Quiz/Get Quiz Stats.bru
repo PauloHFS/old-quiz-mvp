@@ -1,0 +1,19 @@
+meta {
+  name: Get Quiz Stats
+  type: http
+  seq: 8
+}
+
+get {
+  url: {{ _.base_url }}/quiz/1/stats
+  body: none
+  auth: bearer
+}
+
+headers {
+  User-Agent: insomnia/8.3.0
+}
+
+auth:bearer {
+  token: {{access_token}}
+}

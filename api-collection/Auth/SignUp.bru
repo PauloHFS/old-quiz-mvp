@@ -1,0 +1,24 @@
+meta {
+  name: SignUp
+  type: http
+  seq: 7
+}
+
+post {
+  url: {{ _.base_url }}/auth/signup
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+  User-Agent: insomnia/8.3.0
+}
+
+body:json {
+  {
+  	"nome": "Paulo Hernane",
+  	"email": "paulohernane10@gmail.com",
+  	"password": "Ab@12312"
+  }
+}
