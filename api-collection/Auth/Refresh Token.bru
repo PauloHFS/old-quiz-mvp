@@ -1,7 +1,7 @@
 meta {
   name: Refresh Token
   type: http
-  seq: 8
+  seq: 4
 }
 
 post {
@@ -16,7 +16,7 @@ headers {
 }
 
 auth:bearer {
-  token:  {{access_token}}
+  token: {{access_token}}
 }
 
 body:json {

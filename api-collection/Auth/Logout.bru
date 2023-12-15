@@ -1,18 +1,17 @@
 meta {
   name: Logout
   type: http
-  seq: 6
+  seq: 2
 }
 
 post {
-  url: {{ _.base_url }}/auth/logout
+  url: {{base_url}}/auth/logout
   body: json
   auth: bearer
 }
 
 headers {
   Content-Type: application/json
-  User-Agent: insomnia/8.3.0
 }
 
 auth:bearer {
@@ -21,6 +20,6 @@ auth:bearer {
 
 body:json {
   {
-  	"refreshToken": "{{ _.refresh_token }}"
+    "refreshToken": "{{ _.refresh_token }}"
   }
 }
