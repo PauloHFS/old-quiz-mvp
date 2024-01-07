@@ -5,7 +5,7 @@ meta {
 }
 
 post {
-  url: {{ _.base_url }}/auth/refresh-token
+  url: {{base_url}}/auth/refresh-token
   body: json
   auth: bearer
 }
@@ -21,6 +21,6 @@ auth:bearer {
 
 body:json {
   {
-  	"refreshToken": "{{ _.refresh_token }}"
+    "refreshToken": "{{ _.refresh_token }}"
   }
 }

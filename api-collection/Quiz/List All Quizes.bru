@@ -5,14 +5,9 @@ meta {
 }
 
 get {
-  url: {{ _.base_url }}/quiz
+  url: {{base_url}}/quiz
   body: none
   auth: bearer
-}
-
-query {
-  skip: 0
-  take: 10
 }
 
 headers {

@@ -5,7 +5,7 @@ meta {
 }
 
 post {
-  url: {{ _.base_url }}/quiz/2/response
+  url: {{base_url}}/quiz/2/response
   body: json
   auth: bearer
 }
@@ -21,20 +21,20 @@ auth:bearer {
 
 body:json {
   {
-  	"userData": {
-  		"gender": "male",
-  		"age": 23,
-  		"geolocation": "Imperatriz-Maranhão"
-  	},
-  	"responses": [
-  		{
-  			"questionId": 1,
-  			"alternativa": "Sim"
-  		},
-  		{
-  			"questionId": 2,
-  			"alternativa": "Sim"
-  		}
-  	]
+    "userData": {
+      "gender": "male",
+      "age": 23,
+      "geolocation": "Imperatriz-Maranhão"
+    },
+    "responses": [
+      {
+        "questionId": 1,
+        "alternativa": "Sim"
+      },
+      {
+        "questionId": 2,
+        "alternativa": "Sim"
+      }
+    ]
   }
 }

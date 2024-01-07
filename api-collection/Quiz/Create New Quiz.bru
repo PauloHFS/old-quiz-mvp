@@ -5,7 +5,7 @@ meta {
 }
 
 post {
-  url: {{ _.base_url }}/quiz
+  url: {{base_url}}/quiz
   body: json
   auth: bearer
 }
@@ -21,24 +21,24 @@ auth:bearer {
 
 body:json {
   {
-  	"nome": "Pesquisa de Testes 2",
-  	"questoes": [
-  		{
-  			"titulo": "Você gosta de Raça Negra?",
-  			"alternativas": [
-  				"Sim",
-  				"Não"
-  			],
-  			"correctIndex": 0
-  		},
-  		{
-  			"titulo": "Você gosta de Café?",
-  			"alternativas": [
-  				"Sim",
-  				"Não"
-  			],
-  			"correctIndex": 0
-  		}
-  	]
+    "nome": "Pesquisa de Testes 2",
+    "questoes": [
+      {
+        "titulo": "Você gosta de Raça Negra?",
+        "alternativas": [
+          "Sim",
+          "Não"
+        ],
+        "correctIndex": 0
+      },
+      {
+        "titulo": "Você gosta de Café?",
+        "alternativas": [
+          "Sim",
+          "Não"
+        ],
+        "correctIndex": 0
+      }
+    ]
   }
 }
