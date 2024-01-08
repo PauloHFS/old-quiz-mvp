@@ -90,7 +90,7 @@ export const signup = async (req: Request, res: Response) => {
     // TODO melhorar esse fluxo, adicionar tempo de expiração no token
     const accessToken = jwt.sign(user, env.JWT_SECRET);
 
-    if (env.NODE_ENV === 'development') {
+    if (env.NODE_ENV !== 'production') {
       console.log(`http://localhost:5173/auth/verify?token=${accessToken}`);
     } else {
       resend.emails.send({
