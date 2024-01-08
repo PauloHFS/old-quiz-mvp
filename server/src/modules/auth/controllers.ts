@@ -66,22 +66,6 @@ export const login = async (req: Request, res: Response) => {
   }
 };
 
-export const logout = async (req: Request, res: Response) => {
-  try {
-    const { body } = refreshTokenSchema.parse(req);
-
-    await prismaClient.session.delete({
-      where: {
-        refreshToken: body.refreshToken,
-      },
-    });
-
-    return res.status(204).send();
-  } catch (error) {
-    return res.status(400).json(error);
-  }
-};
-
 export const signup = async (req: Request, res: Response) => {
   try {
     const { body } = signupSchema.parse(req);

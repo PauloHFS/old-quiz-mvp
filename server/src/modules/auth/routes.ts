@@ -1,16 +1,9 @@
 import express from 'express';
 import rateLimit from 'express-rate-limit';
 import { validateZodSchema } from '../../middlewares/validateZodSchema';
-import {
-  login,
-  logout,
-  refreshToken,
-  signup,
-  verifyToken,
-} from './controllers';
+import { login, refreshToken, signup, verifyToken } from './controllers';
 import {
   loginSchema,
-  logoutSchema,
   refreshTokenSchema,
   signupSchema,
   verifyTokenSchema,
@@ -18,8 +11,15 @@ import {
 
 const AuthRouter = express.Router();
 
-AuthRouter.post('/login', validateZodSchema(loginSchema), login);
-AuthRouter.post('/logout', validateZodSchema(logoutSchema), logout);
+AuthRouter.post(
+  '/login',
+  validateZodSchema(loginSchema),
+  rateLimit({
+    windowMs: 60 * 60 * 1000,
+    max: 10,
+  }), // 10 requests por hora
+  login
+);
 AuthRouter.post(
   '/signup',
   rateLimit({ windowMs: 60 * 60 * 1000, max: 10 }), // 10 requests por hora

@@ -16,6 +16,10 @@ app.use(express.json());
 app.use('/auth', AuthRouter);
 app.use('/quiz', QuizRouter);
 
-app.listen(env.PORT, () => {
-  console.log(`Server Running at http://localhost:${env.PORT}`);
-});
+if (env.NODE_ENV !== 'test') {
+  app.listen(env.PORT, () => {
+    console.log(`Server Running at http://localhost:${env.PORT}`);
+  });
+}
+
+export { app };
